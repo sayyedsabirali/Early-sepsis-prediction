@@ -1,4 +1,3 @@
-
 sepsis-env/
 __pycache__/
 *.pyc
@@ -6,4 +5,4 @@ logs/
 artifacts/
 .dvc/
 .env
-.ipynb_checkpoints/
+.ipynb_checkpoints

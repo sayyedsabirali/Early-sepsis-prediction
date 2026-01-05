@@ -1,0 +1,49 @@
+columns:
+  - stay_id
+  - hour
+  - hr
+  - map
+  - rr
+  - temp_c
+  - spo2
+  - creatinine
+  - bilirubin
+  - platelets
+  - lactate
+  - sofa_cardio
+  - sofa_lab
+  - anchor_age
+  - gender
+  - race
+  - insurance
+  - admission_type
+  - urine_output_ml
+  - urine_output_6h_ml
+  - label_12h
+
+numerical_columns:
+  - hr
+  - map
+  - rr
+  - temp_c
+  - spo2
+  - creatinine
+  - bilirubin
+  - platelets
+  - lactate
+  - sofa_cardio
+  - sofa_lab
+  - anchor_age
+  - urine_output_ml
+  - urine_output_6h_ml
+  - label_12h
+
+categorical_columns:
+  - gender
+  - race
+  - insurance
+  - admission_type
+
+drop_columns:
+  - stay_id
+  - hour
