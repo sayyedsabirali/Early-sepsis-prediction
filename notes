@@ -1,0 +1,24 @@
+1. configuration → connection
+   AWS / external services se secure connection banata hai.
+
+2. cloud_storage → S3 helper
+   S3 par file read, write, upload, download ke common operations handle karta hai.
+
+3. data_access → data source
+   Data ko actual source (S3) se utha kar DataFrame me convert karta hai.
+
+4. components → actual ML steps
+   Ingestion, validation, transformation, training jaise core ML steps execute karta hai.
+
+5. entity → structure
+   -config_entity.py: Pipeline ko batata hai kya rules, paths aur settings use karni hain -input configuration
+   -artifact_entity.py: Pipeline ke har step ke baad kya output bana, kahan save hua, aur status kya h results
+
+6. pipeline → flow control
+   Saare components ko sahi order me run karwata hai (end-to-end flow).
+
+7. logger / exception → safety
+   Errors aur logs ko production-safe tareeke se handle karta hai.
+
+8. app.py → serving
+   Trained model ko API ke through users ko serve karta hai.

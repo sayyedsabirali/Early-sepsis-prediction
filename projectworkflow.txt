@@ -1,0 +1,220 @@
+SEPSIS EARLY WARNING SYSTEM
+
+STEP 1: PROJECT SETUP & ENVIRONMENT
+- Create project folder
+- Create virtual environment
+- python -m venv sepsis-env
+- Activate: sepsis-env\Scripts\activate
+- Upgrade pip: python -m pip install --upgrade pip
+- Install core dependencies
+- Install: pip install -r requirements.txt
+- Verify: pip list
+
+STEP 2: PROJECT STRUCTURE GENERATION
+- Create template.py
+- Paste your template code.
+- Run template.py
+
+STEP 3: AWS ACCOUNT & S3 SETUP
+- Create S3 bucket
+- AWS Console → S3 → Create bucket
+- Bucket name: sepsis-mlops-data
+- Region: us-east-1
+-Create folders inside bucket:
+  raw-data
+  processed-data
+  feature-store
+  artifacts
+  model-registry
+-Create IAM user
+  AWS Console → IAM → Users → Create user
+  Access type: Programmatic access
+  Attach policy: AmazonS3FullAccess
+  Download credentials CSV.
+
+STEP 4: AWS CLI CONFIGURATION (LOCAL)
+- Run: aws configure
+- Verify: aws s3 ls
+
+STEP 5: UPLOAD DATASET TO S3
+- Assume dataset name: sepsis-data.csv
+- Upload: aws s3 cp sepsis-data.csv s3://sepsis-mlops-data/raw-data/
+- Verify: aws s3 ls s3://sepsis-mlops-data/raw-data/
+
+STEP 6: LOGGING & EXCEPTION SETUP
+- Implement logger.py Use logging module with file + console handler.
+- Implement exception.py Create custom exception class.
+- Test: python demo.py Check logs printed.
+
+STEP 7: DATA INGESTION (FROM S3)
+- Add aws_connection logic using boto3 then aws_storage which perform read or write operation then data access
+  which access the data from s3
+- add data ingestion portion and check by integrate the training pipeline
+
+STEP 8: DATA VALIDATION
+
+Define schema in config/schema.yaml.
+
+Validate:
+column names
+dtypes
+label_12h exists
+dataset not empty
+
+Generate validation report.
+
+Run pipeline:
+python demo.py
+
+STEP 9: DATA TRANSFORMATION
+
+Separate numerical & categorical features.
+
+One-hot encode categorical features.
+
+Preserve NaN values (tree models).
+
+Save transformer object.
+
+Generate final feature matrices.
+
+Run:
+python demo.py
+
+STEP 10: FEATURE STORE (NEW)
+
+Save transformed features to:
+s3://sepsis-mlops-data/feature-store/
+
+Version features by timestamp.
+
+Reuse features for retraining.
+
+STEP 11: MODEL TRAINING
+
+Train baseline model:
+HistGradientBoosting or LightGBM.
+
+Handle class imbalance.
+
+Evaluate on validation set:
+AUROC
+Recall
+Precision
+
+Save model artifact.
+
+Run:
+python demo.py
+
+STEP 12: EXPERIMENT TRACKING (MLFLOW + DAGSHUB)
+
+Create DagsHub repo.
+
+Connect MLflow:
+Set tracking URI.
+
+Log:
+params
+metrics
+model
+artifacts
+
+Run training again.
+
+STEP 13: DVC SETUP WITH S3
+
+Initialize DVC:
+dvc init
+
+Add remote:
+dvc remote add -d myremote s3://sepsis-mlops-data/dvcstore
+
+Track artifacts:
+dvc add artifacts/
+
+Push to S3:
+dvc push
+
+Commit:
+git add .
+git commit -m "dvc setup"
+
+STEP 14: MODEL EVALUATION & PUSHER
+
+Compare new model vs production.
+
+If improvement > threshold:
+Promote model.
+
+Push model to:
+s3://sepsis-mlops-data/model-registry/
+
+STEP 15: FASTAPI PREDICTION APP
+
+Implement app.py.
+
+Endpoints:
+POST /predict
+POST /train
+
+Run locally:
+uvicorn app:app --reload
+
+Test via browser or Postman.
+
+STEP 16: DOCKERIZATION
+
+Build image:
+docker build -t sepsis-app .
+
+Run locally:
+docker run -p 8000:8000 sepsis-app
+
+STEP 17: CI/CD (GITHUB + EC2)
+
+Create EC2 Ubuntu instance.
+
+Install Docker on EC2.
+
+Setup self-hosted GitHub runner.
+
+Create ECR repository.
+
+Add GitHub secrets:
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_DEFAULT_REGION
+ECR_REPO
+
+Push code → pipeline triggers automatically.
+
+STEP 18: KUBERNETES (EKS)
+
+Create cluster:
+eksctl create cluster --name sepsis-cluster --region us-east-1
+
+Update kubeconfig:
+aws eks update-kubeconfig --name sepsis-cluster --region us-east-1
+
+Deploy:
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+Check:
+kubectl get pods
+kubectl get svc
+
+STEP 19: MONITORING
+
+Expose metrics in FastAPI.
+
+Setup Prometheus.
+
+Setup Grafana.
+
+Monitor:
+request count
+latency
+errors
+prediction distribution
