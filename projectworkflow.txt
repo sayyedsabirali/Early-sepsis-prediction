@@ -52,101 +52,30 @@ STEP 7: DATA INGESTION (FROM S3)
 - add data ingestion portion and check by integrate the training pipeline
 
 STEP 8: DATA VALIDATION
-
-Define schema in config/schema.yaml.
-
-Validate:
-column names
-dtypes
-label_12h exists
-dataset not empty
-
-Generate validation report.
-
-Run pipeline:
-python demo.py
+- Define schema in config/schema.yaml.
+- Validate: column names,dtypes.label_12h exists,dataset not empty
 
 STEP 9: DATA TRANSFORMATION
+- Separate numerical & categorical features.
+- One-hot encode categorical features.
+- Preserve NaN values (tree models).
+- Save transformer object.
+- Generate final feature matrices.
 
-Separate numerical & categorical features.
+STEP 10: MODEL TRAINING
+- Train baseline model:HistGradientBoosting or LightGBM.
 
-One-hot encode categorical features.
+STEP 11: EXPERIMENT TRACKING (MLFLOW + DAGSHUB)
+- Create DagsHub repo.
+- Connect MLflow:
+- Set tracking URI.
+- Log: params,metrics,model,artifacts
 
-Preserve NaN values (tree models).
-
-Save transformer object.
-
-Generate final feature matrices.
-
-Run:
-python demo.py
-
-STEP 10: FEATURE STORE (NEW)
-
-Save transformed features to:
-s3://sepsis-mlops-data/feature-store/
-
-Version features by timestamp.
-
-Reuse features for retraining.
-
-STEP 11: MODEL TRAINING
-
-Train baseline model:
-HistGradientBoosting or LightGBM.
-
-Handle class imbalance.
-
-Evaluate on validation set:
-AUROC
-Recall
-Precision
-
-Save model artifact.
-
-Run:
-python demo.py
-
-STEP 12: EXPERIMENT TRACKING (MLFLOW + DAGSHUB)
-
-Create DagsHub repo.
-
-Connect MLflow:
-Set tracking URI.
-
-Log:
-params
-metrics
-model
-artifacts
-
-Run training again.
-
-STEP 13: DVC SETUP WITH S3
-
-Initialize DVC:
-dvc init
-
-Add remote:
-dvc remote add -d myremote s3://sepsis-mlops-data/dvcstore
-
-Track artifacts:
-dvc add artifacts/
-
-Push to S3:
-dvc push
-
-Commit:
-git add .
-git commit -m "dvc setup"
-
-STEP 14: MODEL EVALUATION & PUSHER
+STEP 13: MODEL EVALUATION & PUSHER
 
 Compare new model vs production.
-
 If improvement > threshold:
 Promote model.
-
 Push model to:
 s3://sepsis-mlops-data/model-registry/
 

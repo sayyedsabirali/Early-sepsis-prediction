@@ -38,7 +38,7 @@ S3_RAW_DATA_DIR: str = "raw-data"
 S3_PROCESSED_DATA_DIR: str = "processed-data"
 S3_FEATURE_STORE_DIR: str = "feature-store"
 S3_ARTIFACT_DIR: str = "artifacts"
-S3_MODEL_REGISTRY_DIR: str = "model-registry"
+S3_MODEL_REGISTRY_DIR: str = "model-registry/model.pkl"
 
 # ==================================================
 # DATA INGESTION

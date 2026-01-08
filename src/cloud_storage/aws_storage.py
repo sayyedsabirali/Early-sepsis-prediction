@@ -18,6 +18,17 @@ class SimpleStorageService:
         self.s3_resource = s3_client.s3_resource
         self.s3_client = s3_client.s3_client
 
+    def is_object_present(self, bucket_name: str, key: str) -> bool:
+        """
+        Check if exact S3 object (file) exists
+        """
+        try:
+            self.s3_client.head_object(Bucket=bucket_name, Key=key)
+            return True
+        except Exception:
+            return False
+
+
     def s3_key_path_available(self, bucket_name, s3_key) -> bool:
         try:
             bucket = self.get_bucket(bucket_name)
@@ -65,14 +76,29 @@ class SimpleStorageService:
 
     def load_model(self, model_name: str, bucket_name: str, model_dir: str = None) -> object:
         try:
-            model_file = model_dir + "/" + model_name if model_dir else model_name
+            model_file = f"{model_dir}/{model_name}" if model_dir else model_name
+
             file_object = self.get_file_object(model_file, bucket_name)
-            model_obj = self.read_object(file_object, decode=False)
-            model = pickle.loads(model_obj)
+
+            # 🛡 SAFETY CHECK
+            if isinstance(file_object, list):
+                raise Exception(
+                    f"S3 returned a list instead of file object for key: {model_file}"
+                )
+
+            model_bytes = self.read_object(file_object, decode=False)
+
+            if not model_bytes:
+                raise Exception("Model file is empty in S3")
+
+            model = pickle.loads(model_bytes)
+
             logging.info("Production model loaded from S3 bucket.")
             return model
+
         except Exception as e:
             raise MyException(e, sys) from e
+
 
     def create_folder(self, folder_name: str, bucket_name: str) -> None:
         logging.info("Entered the create_folder method of SimpleStorageService class")

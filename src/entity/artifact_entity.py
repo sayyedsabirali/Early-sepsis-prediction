@@ -5,10 +5,10 @@ from typing import Optional
 @dataclass
 class DataIngestionArtifact:
     train_file_path: str
+    val_file_path: str
     test_file_path: str
     is_ingested: bool
     message: str
-
 
 @dataclass
 class DataValidationArtifact:
@@ -36,8 +36,9 @@ class ModelTrainerArtifact:
 @dataclass
 class ModelEvaluationArtifact:
     is_model_accepted: bool
-    improved_auc: float
-    message: str
+    s3_model_path: str
+    trained_model_path: str
+    changed_accuracy: float
 
 
 @dataclass

@@ -29,6 +29,19 @@ class DataTransformationConfig:
         ARTIFACT_DIR,
         DATA_TRANSFORMATION_DIR_NAME
     )
+
+    transformed_train_path: str = os.path.join(
+        ARTIFACT_DIR,
+        DATA_TRANSFORMATION_DIR_NAME,
+        "train.npy"
+    )
+
+    transformed_test_path: str = os.path.join(
+        ARTIFACT_DIR,
+        DATA_TRANSFORMATION_DIR_NAME,
+        "test.npy"
+    )
+
     transformer_object_path: str = os.path.join(
         ARTIFACT_DIR,
         DATA_TRANSFORMATION_DIR_NAME,
@@ -60,3 +73,4 @@ class ModelEvaluationConfig:
 class ModelPusherConfig:
     bucket_name: str = MODEL_PUSHER_BUCKET_NAME
     model_registry_key: str = MODEL_PUSHER_S3_KEY
+

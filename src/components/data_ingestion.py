@@ -7,6 +7,7 @@ from src.entity.config_entity import DataIngestionConfig
 from src.entity.artifact_entity import DataIngestionArtifact
 from src.exception import MyException
 from src.logger import logger
+import pandas as pd
 from src.data_access.sepsis_data import SepsisData
 
 
@@ -20,10 +21,18 @@ class DataIngestion:
 
     def export_data_from_s3(self) -> DataFrame:
         try:
-            logger.info("Fetching raw data from S3")
-            df = self.sepsis_data.export_s3_data_as_dataframe()
-            logger.info(f"Raw data shape: {df.shape}")
+            logger.info("TEMP MODE: Loading data from local machine")
+            # for fast data loading
+            LOCAL_DATA_PATH = r"F:\9. MAJOR PROJECT\2. Sepsis- project\sepsis-data\sepsis data"
+            df = pd.read_csv(LOCAL_DATA_PATH)
+            logger.info(f"Loaded LOCAL sample data shape: {df.shape}")
             return df
+
+
+            # logger.info("Fetching raw data from S3")
+            # df = self.sepsis_data.export_s3_data_as_dataframe()
+            # logger.info(f"Raw data shape: {df.shape}")
+            # return df
         except Exception as e:
             raise MyException(e, sys)
 
@@ -75,10 +84,12 @@ class DataIngestion:
 
             artifact = DataIngestionArtifact(
                 train_file_path=train_path,
+                val_file_path=val_path,
                 test_file_path=test_path,
                 is_ingested=True,
                 message="Train/Val/Test data ingestion completed successfully"
             )
+
 
             logger.info(f"DataIngestionArtifact: {artifact}")
             return artifact
