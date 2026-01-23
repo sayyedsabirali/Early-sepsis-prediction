@@ -24,16 +24,21 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build & Push Docker Image
+        working-directory: ${{ github.workspace }}
         shell: bash
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPO: ${{ secrets.ECR_REPO }}
           IMAGE_TAG: latest
         run: |
-          echo "Building image..."
+          echo "Current directory:"
+          pwd
+          ls -la
+
+          echo "Building Docker image..."
           docker build -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} .
 
-          echo "Pushing image..."
+          echo "Pushing image to ECR..."
           docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
 
   Continuous-Deployment:
@@ -45,12 +50,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Stop & Remove Old Container
+      - name: Stop & remove old container
+        shell: bash
         run: |
           docker stop sepsis-api || true
           docker rm sepsis-api || true
 
-      - name: Run New Container on EC2
+      - name: Pull image & run container on EC2
+        shell: bash
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPO: ${{ secrets.ECR_REPO }}
