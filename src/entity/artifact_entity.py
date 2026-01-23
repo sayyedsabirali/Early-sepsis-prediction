@@ -2,6 +2,9 @@ from dataclasses import dataclass
 from typing import Optional
 
 
+# ==============================
+# Data Ingestion
+# ==============================
 @dataclass
 class DataIngestionArtifact:
     train_file_path: str
@@ -10,6 +13,10 @@ class DataIngestionArtifact:
     is_ingested: bool
     message: str
 
+
+# ==============================
+# Data Validation
+# ==============================
 @dataclass
 class DataValidationArtifact:
     validation_status: bool
@@ -17,14 +24,21 @@ class DataValidationArtifact:
     message: str
 
 
+# ==============================
+# Data Transformation (🔥 FIXED)
+# ==============================
 @dataclass
 class DataTransformationArtifact:
     transformed_train_path: str
+    transformed_val_path: str        # ✅ ADDED
     transformed_test_path: str
-    transformer_object_path: str
+    transformer_object_path: Optional[str]
     message: str
 
 
+# ==============================
+# Model Trainer
+# ==============================
 @dataclass
 class ModelTrainerArtifact:
     trained_model_path: str
@@ -33,14 +47,25 @@ class ModelTrainerArtifact:
     message: str
 
 
+# ==============================
+# Model Evaluation
+# ==============================
 @dataclass
 class ModelEvaluationArtifact:
     is_model_accepted: bool
     s3_model_path: str
     trained_model_path: str
-    changed_accuracy: float
+
+    # Research-aligned metrics
+    new_model_pr_auc: float
+    best_model_pr_auc: float
+    pr_auc_diff: float
+    new_model_recall: float
 
 
+# ==============================
+# Model Pusher
+# ==============================
 @dataclass
 class ModelPusherArtifact:
     bucket_name: str

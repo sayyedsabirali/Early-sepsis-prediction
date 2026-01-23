@@ -1,9 +1,6 @@
 import sys
 import numpy as np
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer
 
 from src.constants import TARGET_COLUMN
 from src.entity.config_entity import DataTransformationConfig
@@ -14,12 +11,8 @@ from src.entity.artifact_entity import (
 )
 from src.exception import MyException
 from src.logger import logger
-from src.utils.main_utils import save_object, save_numpy_array_data
+from src.utils.main_utils import save_numpy_array_data
 from src.utils.preprocessing_utils import PreprocessingUtils
-
-
-def identity_function(x):
-    return x
 
 
 class DataTransformation:
@@ -40,22 +33,6 @@ class DataTransformation:
     def read_data(path: str) -> pd.DataFrame:
         return pd.read_csv(path)
 
-    def get_transformer(self) -> Pipeline:
-        logger.info("Creating identity transformer (NO scaling)")
-        return Pipeline(
-            steps=[
-                (
-                    "identity",
-                    ColumnTransformer(
-                        transformers=[
-                            ("identity", FunctionTransformer(identity_function), slice(0, None))
-                        ],
-                        remainder="passthrough",
-                    ),
-                )
-            ]
-        )
-
     def initiate_data_transformation(self) -> DataTransformationArtifact:
         try:
             logger.info("Starting Data Transformation")
@@ -63,17 +40,23 @@ class DataTransformation:
             if not self.validation_artifact.validation_status:
                 raise Exception(self.validation_artifact.message)
 
+            # ============================
             # Load data
+            # ============================
             train_df = self.read_data(self.ingestion_artifact.train_file_path)
-            val_df = self.read_data(self.ingestion_artifact.val_file_path)
-            test_df = self.read_data(self.ingestion_artifact.test_file_path)
+            val_df   = self.read_data(self.ingestion_artifact.val_file_path)
+            test_df  = self.read_data(self.ingestion_artifact.test_file_path)
 
-            # Feature engineering (skipped by design)
+            # ============================
+            # Feature engineering (NO LEAK)
+            # ============================
             train_df = PreprocessingUtils.apply_complete_feature_engineering(train_df)
             val_df   = PreprocessingUtils.apply_complete_feature_engineering(val_df)
             test_df  = PreprocessingUtils.apply_complete_feature_engineering(test_df)
 
-            # Separate X/y
+            # ============================
+            # Separate X / y
+            # ============================
             y_train = train_df[TARGET_COLUMN]
             y_val   = val_df[TARGET_COLUMN]
             y_test  = test_df[TARGET_COLUMN]
@@ -82,33 +65,42 @@ class DataTransformation:
             X_val   = val_df.drop(columns=[TARGET_COLUMN])
             X_test  = test_df.drop(columns=[TARGET_COLUMN])
 
-            # Preprocessing
+            # ============================
+            # Label distribution check
+            # ============================
+            logger.info("Label distribution check:")
+            logger.info(f"Train:\n{y_train.value_counts(normalize=True)}")
+            logger.info(f"Val:\n{y_val.value_counts(normalize=True)}")
+            logger.info(f"Test:\n{y_test.value_counts(normalize=True)}")
+
+            # ============================
+            # Preprocessing (SAFE)
+            # ============================
             X_train = PreprocessingUtils.apply_preprocessing_transformations(X_train)
             X_val   = PreprocessingUtils.apply_preprocessing_transformations(X_val)
             X_test  = PreprocessingUtils.apply_preprocessing_transformations(X_test)
 
-            # Transformer
-            transformer = self.get_transformer()
+            # ============================
+            # Convert to numpy
+            # ============================
+            train_arr = np.c_[X_train.values, y_train.values]
+            val_arr   = np.c_[X_val.values, y_val.values]
+            test_arr  = np.c_[X_test.values, y_test.values]
 
-            X_train_arr = transformer.fit_transform(X_train)
-            X_val_arr   = transformer.transform(X_val)
-            X_test_arr  = transformer.transform(X_test)
-
-            train_arr = np.c_[X_train_arr, y_train.values]
-            val_arr   = np.c_[X_val_arr, y_val.values]
-            test_arr  = np.c_[X_test_arr, y_test.values]
-
-            # Save
+            # ============================
+            # Save arrays
+            # ============================
             save_numpy_array_data(self.config.transformed_train_path, train_arr)
+            save_numpy_array_data(self.config.transformed_val_path, val_arr)
             save_numpy_array_data(self.config.transformed_test_path, test_arr)
-            save_object(self.config.transformer_object_path, transformer)
 
             logger.info("Data Transformation completed successfully")
 
             return DataTransformationArtifact(
                 transformed_train_path=self.config.transformed_train_path,
+                transformed_val_path=self.config.transformed_val_path,
                 transformed_test_path=self.config.transformed_test_path,
-                transformer_object_path=self.config.transformer_object_path,
+                transformer_object_path=None,  # intentionally None
                 message="Data transformation successful",
             )
 

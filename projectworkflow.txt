@@ -73,32 +73,14 @@ STEP 11: EXPERIMENT TRACKING (MLFLOW + DAGSHUB)
 
 STEP 13: MODEL EVALUATION & PUSHER
 
-Compare new model vs production.
-If improvement > threshold:
-Promote model.
-Push model to:
-s3://sepsis-mlops-data/model-registry/
-
 STEP 15: FASTAPI PREDICTION APP
-
-Implement app.py.
-
-Endpoints:
-POST /predict
-POST /train
-
-Run locally:
-uvicorn app:app --reload
-
-Test via browser or Postman.
+ - Implement prediction pipeline
+ - Implement app.py.
+ - Run locally: uvicorn app:app --reload
 
 STEP 16: DOCKERIZATION
-
-Build image:
-docker build -t sepsis-app .
-
-Run locally:
-docker run -p 8000:8000 sepsis-app
+ - Build image: docker build -t sepsis-app .
+ - Run locally: docker run -p 8000:8000 sepsis-app
 
 STEP 17: CI/CD (GITHUB + EC2)
 

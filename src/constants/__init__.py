@@ -4,9 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ==================================================
-# PROJECT METADATA
-# ==================================================
 
 PROJECT_NAME: str = "sepsis_early_warning"
 PIPELINE_NAME: str = "sepsis_pipeline"
@@ -102,3 +99,32 @@ APP_PORT: int = 8000
 # ==================================================
 
 LOG_DIR: str = "logs"
+
+# ==================================================
+# Model parameter
+# ==================================================
+
+XGB_MODEL_PARAMS: dict = {
+    "n_estimators": 500,
+    "max_depth": 6,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 5,
+    "gamma": 0.5,
+    "objective": "binary:logistic",
+    "eval_metric": "aucpr",
+    "random_state": 42,
+    "use_label_encoder": False,
+}
+
+
+# ================================
+# EARLY SEPSIS THRESHOLDS
+# ================================
+
+SEPSIS_HIGH_RISK_THRESHOLD: float = 0.20
+SEPSIS_MODERATE_RISK_THRESHOLD: float = 0.10
+
+MIN_ACCEPTABLE_RECALL: float = 0.60
+MIN_ACCEPTABLE_PRAUC: float = 0.15

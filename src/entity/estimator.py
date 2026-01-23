@@ -1,7 +1,5 @@
 import sys
 import pandas as pd
-from pandas import DataFrame
-from sklearn.pipeline import Pipeline
 
 from src.exception import MyException
 from src.logger import logging
@@ -10,33 +8,58 @@ from src.utils.preprocessing_utils import PreprocessingUtils
 
 class MyModel:
     """
-    Wrapper class containing:
-    - preprocessing pipeline
-    - trained ML model
-    Used during inference
+    FINAL inference wrapper (NO sklearn transformer)
+
+    - Uses same preprocessing utils as training
+    - Uses trained XGBoost model
+    - Uses learned decision threshold
     """
 
-    def __init__(self, preprocessing_object: Pipeline, trained_model_object: object):
-        self.preprocessing_object = preprocessing_object
+    def __init__(
+        self,
+        trained_model_object: object,
+        decision_threshold: float
+    ):
         self.trained_model_object = trained_model_object
+        self.decision_threshold = decision_threshold
 
-    def predict(self, dataframe: pd.DataFrame):
+    def predict_proba(self, dataframe: pd.DataFrame):
         try:
-            logging.info("Starting inference pipeline")
-
-            # Step 1: preprocessing (same as training)
+            # 🔥 SAME preprocessing as training
             df_processed = PreprocessingUtils.apply_preprocessing_transformations(
                 dataframe
             )
 
-            # Step 2: apply transformer 
-            X = self.preprocessing_object.transform(df_processed)
+            prob = self.trained_model_object.predict_proba(
+                df_processed.values
+            )[:, 1]
 
-            # Step 3: prediction
-            preds = self.trained_model_object.predict(X)
+            return prob
 
-            logging.info(f"Inference completed | samples={len(preds)}")
-            return preds
+        except Exception as e:
+            raise MyException(e, sys)
+
+    def predict(self, dataframe: pd.DataFrame):
+        try:
+            prob = float(self.predict_proba(dataframe)[0])
+            pred = int(prob >= self.decision_threshold)
+
+            logging.info(
+                f"Inference | prob={prob:.4f} | "
+                f"threshold={self.decision_threshold:.3f} | "
+                f"label={pred}"
+            )
+
+            return {
+                "prediction": pred,
+                "sepsis_risk_score": round(prob, 4),
+                "risk_label": (
+                    "HIGH RISK OF SEPSIS (within 12h)"
+                    if pred == 1 else
+                    "LOW RISK OF SEPSIS (within 12h)"
+                ),
+                "decision_threshold": round(self.decision_threshold, 4)
+            }
 
         except Exception as e:
             raise MyException(e, sys)

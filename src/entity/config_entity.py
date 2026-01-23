@@ -3,6 +3,9 @@ import os
 from src.constants import *
 
 
+# ==================================================
+# DATA INGESTION
+# ==================================================
 @dataclass
 class DataIngestionConfig:
     data_ingestion_dir: str = os.path.join(ARTIFACT_DIR, DATA_INGESTION_DIR_NAME)
@@ -12,6 +15,9 @@ class DataIngestionConfig:
     split_by_column: str = DATA_INGESTION_SPLIT_BY_COLUMN
 
 
+# ==================================================
+# DATA VALIDATION
+# ==================================================
 @dataclass
 class DataValidationConfig:
     data_validation_dir: str = os.path.join(ARTIFACT_DIR, DATA_VALIDATION_DIR_NAME)
@@ -23,17 +29,25 @@ class DataValidationConfig:
     )
 
 
+# ==================================================
+# DATA TRANSFORMATION  🔥 FIXED
+# ==================================================
 @dataclass
 class DataTransformationConfig:
     data_transformation_dir: str = os.path.join(
-        ARTIFACT_DIR,
-        DATA_TRANSFORMATION_DIR_NAME
+        ARTIFACT_DIR, DATA_TRANSFORMATION_DIR_NAME
     )
 
     transformed_train_path: str = os.path.join(
         ARTIFACT_DIR,
         DATA_TRANSFORMATION_DIR_NAME,
         "train.npy"
+    )
+
+    transformed_val_path: str = os.path.join(   # 🔥 THIS WAS MISSING
+        ARTIFACT_DIR,
+        DATA_TRANSFORMATION_DIR_NAME,
+        "val.npy"
     )
 
     transformed_test_path: str = os.path.join(
@@ -49,6 +63,9 @@ class DataTransformationConfig:
     )
 
 
+# ==================================================
+# MODEL TRAINER
+# ==================================================
 @dataclass
 class ModelTrainerConfig:
     model_trainer_dir: str = os.path.join(ARTIFACT_DIR, MODEL_TRAINER_DIR_NAME)
@@ -62,6 +79,9 @@ class ModelTrainerConfig:
     random_state: int = MODEL_TRAINER_RANDOM_STATE
 
 
+# ==================================================
+# MODEL EVALUATION
+# ==================================================
 @dataclass
 class ModelEvaluationConfig:
     changed_threshold_score: float = MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE
@@ -69,8 +89,10 @@ class ModelEvaluationConfig:
     model_registry_key: str = MODEL_PUSHER_S3_KEY
 
 
+# ==================================================
+# MODEL PUSHER
+# ==================================================
 @dataclass
 class ModelPusherConfig:
     bucket_name: str = MODEL_PUSHER_BUCKET_NAME
     model_registry_key: str = MODEL_PUSHER_S3_KEY
-

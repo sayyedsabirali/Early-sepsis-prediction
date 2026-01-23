@@ -8,8 +8,6 @@ columns:
   - bilirubin
   - platelets
   - lactate
-  - sofa_cardio
-  - sofa_lab
   - anchor_age
   - gender
   - urine_output_6h_ml
@@ -26,8 +24,6 @@ numerical_columns:
   - bilirubin
   - platelets
   - lactate
-  - sofa_cardio
-  - sofa_lab
   - anchor_age
   - urine_output_6h_ml
 
@@ -47,3 +43,5 @@ drop_columns:
   - race
   - urine_output_ml
   - admission_type
+  - sofa_cardio
+  - sofa_lab

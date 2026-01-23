@@ -39,7 +39,8 @@ class PreprocessingUtils:
             "race",
             "urine_output_ml",
             "sofa_lab",
-            "sofa_cardio"
+            "sofa_cardio",
+            "admission_type"
 
         ]
 
