@@ -2,9 +2,6 @@ pandas
 numpy
 scikit-learn
 lightgbm
-mlflow
-dagshub
-dvc
 awscli
 boto3
 fastapi
