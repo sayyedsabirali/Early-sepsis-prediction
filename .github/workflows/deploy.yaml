@@ -30,12 +30,14 @@ jobs:
           ECR_REPO: ${{ secrets.ECR_REPO }}
           IMAGE_TAG: latest
         run: |
-          echo "Building Docker image from workspace..."
-          docker build "$GITHUB_WORKSPACE" \
-            -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
+          echo "Building Docker image using tar stdin..."
+
+          tar -C "$GITHUB_WORKSPACE" -cf - . | \
+            docker build -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} -f Dockerfile -
 
           echo "Pushing image..."
           docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
+
 
 
   Continuous-Deployment:
