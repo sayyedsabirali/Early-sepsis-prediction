@@ -30,8 +30,7 @@ jobs:
           IMAGE_TAG: latest
         run: |
           echo "Building image..."
-          docker buildx build \
-            --load \
+          docker build \
             -f Dockerfile \
             -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} \
             .
