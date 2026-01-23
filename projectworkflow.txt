@@ -83,22 +83,12 @@ STEP 16: DOCKERIZATION
  - Run locally: docker run -p 8000:8000 sepsis-app
 
 STEP 17: CI/CD (GITHUB + EC2)
-
-Create EC2 Ubuntu instance.
-
-Install Docker on EC2.
-
-Setup self-hosted GitHub runner.
-
-Create ECR repository.
-
-Add GitHub secrets:
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-AWS_DEFAULT_REGION
-ECR_REPO
-
-Push code → pipeline triggers automatically.
+ - Create EC2 Ubuntu instance.
+ - Install Docker on EC2.
+ - Setup self-hosted GitHub runner.
+ - Create ECR repository.
+ - Add GitHub secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, ECR_REPO
+ - Push code → pipeline triggers automatically.
 
 STEP 18: KUBERNETES (EKS)
 
