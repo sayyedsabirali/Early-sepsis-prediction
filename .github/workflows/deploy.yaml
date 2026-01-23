@@ -23,24 +23,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Debug - Check files
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Listing files:"
-          ls -la
-          echo "Checking Dockerfile:"
-          test -f Dockerfile && echo "Dockerfile exists" || echo "Dockerfile NOT found"
-
       - name: Build & Push Docker Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPO: ${{ secrets.ECR_REPO }}
           IMAGE_TAG: latest
-          DOCKER_BUILDKIT: 0
         run: |
           echo "Building image..."
-          echo "Current dir: $(pwd)"
-          docker build -f Dockerfile -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} .
+          docker buildx build --load -f Dockerfile -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} .
 
           echo "Pushing image..."
           docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
