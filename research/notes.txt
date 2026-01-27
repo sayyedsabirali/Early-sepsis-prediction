@@ -1,0 +1,30 @@
+------ Sepsis Prediction Model Comparison -----
+
+In this study, multiple machine learning models were evaluated for early sepsis detection using ICU data. 
+The models exhibited different predictive behaviors, highlighting the trade-off between sensitivity (recall)
+and specificity (precision).
+
+The XGBoost model achieved a ROC-AUC of 0.84 and a recall of 73%, indicating strong ability to identify 
+sepsis patients. However, its precision was low (7%), meaning it produced many false alarms. This behavior
+is suitable for an early warning system, where missing a critical patient is more dangerous than issuing 
+extra alerts.
+
+The Random Forest model showed the highest ROC-AUC (0.93) and PR-AUC (0.63), with extremely high precision 
+(99%). This indicates that when the model predicts sepsis, it is almost always correct. However, its recall 
+was low (18%), meaning many true sepsis cases were missed. Therefore, this model behaves like a confirmation 
+system, providing high-confidence predictions rather than broad screening.
+
+=== MODEL EXPERIMENTS STARTED ===
+
+Training XGBoost...
+XGBoost → {'roc_auc': 0.8424382129920194, 'pr_auc': 0.126731387366072, 'best_threshold': 0.7044805288314819}
+
+Training RandomForest...
+RandomForest → {'roc_auc': 0.9378264747897178, 'pr_auc': 0.6369294075368174, 'best_threshold': 0.1532697511288011}
+=== MODEL EXPERIMENTS STARTED ===
+
+Training GradientBoosting...
+GradientBoosting → {'roc_auc': 0.8071887129460382, 'pr_auc': 0.1236646809493084, 'best_threshold': 0.04855300651503}
+
+Training LogisticRegression...
+LogisticRegression → {'roc_auc': 0.6685808624958113, 'pr_auc': 0.03903925732497094, 'best_threshold': 0.6111703365706229}
