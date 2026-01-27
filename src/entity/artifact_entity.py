@@ -24,9 +24,7 @@ class DataValidationArtifact:
     message: str
 
 
-# ==============================
-# Data Transformation (🔥 FIXED)
-# ==============================
+
 @dataclass
 class DataTransformationArtifact:
     transformed_train_path: str
@@ -47,20 +45,24 @@ class ModelTrainerArtifact:
     message: str
 
 
-# ==============================
-# Model Evaluation
-# ==============================
+
 @dataclass
 class ModelEvaluationArtifact:
     is_model_accepted: bool
     s3_model_path: str
     trained_model_path: str
 
-    # Research-aligned metrics
+    # Core research metrics
     new_model_pr_auc: float
     best_model_pr_auc: float
     pr_auc_diff: float
     new_model_recall: float
+
+    # 🔥 Newly added reporting fields
+    accuracy: float
+    metrics_path: str
+    pr_curve_path: str
+    roc_curve_path: str
 
 
 # ==============================

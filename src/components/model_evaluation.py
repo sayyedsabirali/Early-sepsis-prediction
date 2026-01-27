@@ -1,9 +1,17 @@
 import sys
+import os
+import json
 import numpy as np
+import matplotlib.pyplot as plt
+
 from sklearn.metrics import (
     roc_auc_score,
     average_precision_score,
-    recall_score
+    recall_score,
+    accuracy_score,
+    precision_score,
+    precision_recall_curve,
+    roc_curve
 )
 
 from src.entity.config_entity import ModelEvaluationConfig
@@ -24,7 +32,8 @@ class ModelEvaluation:
 
     ✔ PR-AUC focused (class imbalance aware)
     ✔ Recall-aware acceptance
-    ✔ Compares against production model if exists
+    ✔ Stores metrics for reporting
+    ✔ Saves PR & ROC curves
     """
 
     def __init__(
@@ -58,6 +67,8 @@ class ModelEvaluation:
         try:
             logging.info("Starting Model Evaluation")
 
+            os.makedirs("artifacts", exist_ok=True)
+
             # ------------------------------
             # Load test data
             # ------------------------------
@@ -78,9 +89,14 @@ class ModelEvaluation:
             y_prob_new = new_model.trained_model_object.predict_proba(X_test)[:, 1]
             y_pred_new = (y_prob_new >= new_model.decision_threshold).astype(int)
 
+            # ------------------------------
+            # Metrics
+            # ------------------------------
             new_roc_auc = roc_auc_score(y_test, y_prob_new)
             new_pr_auc = average_precision_score(y_test, y_prob_new)
             new_recall = recall_score(y_test, y_pred_new)
+            new_accuracy = accuracy_score(y_test, y_pred_new)
+            new_precision = precision_score(y_test, y_pred_new)
 
             logging.info(
                 f"New model | ROC-AUC={new_roc_auc:.4f} | PR-AUC={new_pr_auc:.4f}"
@@ -100,7 +116,7 @@ class ModelEvaluation:
             pr_auc_diff = new_pr_auc - best_pr_auc
 
             # ------------------------------
-            # Acceptance criteria (RESEARCH GRADE)
+            # Acceptance criteria
             # ------------------------------
             is_accepted = (
                 new_pr_auc >= self.model_eval_config.changed_threshold_score
@@ -111,6 +127,60 @@ class ModelEvaluation:
                 f"Model acceptance={is_accepted} | PR-AUC improvement={pr_auc_diff:.4f}"
             )
 
+            # ------------------------------
+            # Save metrics
+            # ------------------------------
+            metrics = {
+                "roc_auc": float(new_roc_auc),
+                "pr_auc": float(new_pr_auc),
+                "recall": float(new_recall),
+                "precision": float(new_precision),
+                "accuracy": float(new_accuracy),
+                "pr_auc_diff": float(pr_auc_diff)
+            }
+
+            metrics_path = os.path.join("artifacts", "evaluation_metrics.json")
+
+            with open(metrics_path, "w") as f:
+                json.dump(metrics, f, indent=4)
+
+            # ------------------------------
+            # PR Curve
+            # ------------------------------
+            precision, recall, _ = precision_recall_curve(y_test, y_prob_new)
+
+            plt.figure()
+            plt.plot(recall, precision)
+            plt.xlabel("Recall")
+            plt.ylabel("Precision")
+            plt.title("Precision-Recall Curve (Sepsis Model)")
+            plt.grid()
+
+            pr_curve_path = os.path.join("artifacts", "pr_curve.png")
+            plt.savefig(pr_curve_path)
+            plt.close()
+
+            # ------------------------------
+            # ROC Curve
+            # ------------------------------
+            fpr, tpr, _ = roc_curve(y_test, y_prob_new)
+
+            plt.figure()
+            plt.plot(fpr, tpr)
+            plt.xlabel("False Positive Rate")
+            plt.ylabel("True Positive Rate")
+            plt.title("ROC Curve (Sepsis Model)")
+            plt.grid()
+
+            roc_curve_path = os.path.join("artifacts", "roc_curve.png")
+            plt.savefig(roc_curve_path)
+            plt.close()
+
+            logging.info("Evaluation artifacts saved successfully")
+
+            # ------------------------------
+            # Return artifact
+            # ------------------------------
             return ModelEvaluationArtifact(
                 is_model_accepted=is_accepted,
                 s3_model_path=self.model_eval_config.model_registry_key,
@@ -118,7 +188,11 @@ class ModelEvaluation:
                 new_model_pr_auc=new_pr_auc,
                 best_model_pr_auc=best_pr_auc,
                 pr_auc_diff=pr_auc_diff,
-                new_model_recall=new_recall
+                new_model_recall=new_recall,
+                accuracy=new_accuracy,
+                metrics_path=metrics_path,
+                pr_curve_path=pr_curve_path,
+                roc_curve_path=roc_curve_path
             )
 
         except Exception as e:
