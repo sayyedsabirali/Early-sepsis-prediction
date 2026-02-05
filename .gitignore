@@ -6,3 +6,4 @@ artifacts/
 .dvc/
 .env
 .ipynb_checkpoints
+research/
