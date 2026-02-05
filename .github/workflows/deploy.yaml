@@ -1,66 +1,66 @@
-# name: CI/CD Sepsis API on EC2
+name: CI/CD Sepsis API on EC2
 
-# on:
-#   push:
-#     branches: [main]
+on:
+  push:
+    branches: [main]
 
-# jobs:
-#   Continuous-Integration:
-#     runs-on: ubuntu-latest
+jobs:
+  Continuous-Integration:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION_NAME }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION_NAME }}
 
-#       - name: Login to Amazon ECR
-#         uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
-#       - name: Set up Docker Buildx
-#         uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-#       - name: Build and Push Docker Image
-#         uses: docker/build-push-action@v5
-#         with:
-#           context: .
-#           push: true
-#           tags: |
-#             ${{ secrets.ECR_REPO_URI }}:latest
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.ECR_REPO_URI }}:latest
 
 
-#   Continuous-Deployment:
-#     needs: Continuous-Integration
-#     runs-on: self-hosted
+  Continuous-Deployment:
+    needs: Continuous-Integration
+    runs-on: self-hosted
 
-#     steps:
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION_NAME }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION_NAME }}
 
-#       - name: Login to Amazon ECR
-#         uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
-#       - name: Stop & remove old container
-#         run: |
-#           docker rm -f sepsis-api || true
+      - name: Stop & remove old container
+        run: |
+          docker rm -f sepsis-api || true
 
-#       - name: Pull latest image
-#         run: |
-#           docker pull ${{ secrets.ECR_REPO_URI }}:latest
+      - name: Pull latest image
+        run: |
+          docker pull ${{ secrets.ECR_REPO_URI }}:latest
 
-#       - name: Run API container (AUTO-LIVE)
-#         run: |
-#           docker run -d \
-#             --name sepsis-api \
-#             --restart always \
-#             -p 5000:5000 \
-#             ${{ secrets.ECR_REPO_URI }}:latest
+      - name: Run API container (AUTO-LIVE)
+        run: |
+          docker run -d \
+            --name sepsis-api \
+            --restart always \
+            -p 5000:5000 \
+            ${{ secrets.ECR_REPO_URI }}:latest
