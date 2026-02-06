@@ -15,3 +15,8 @@ dill
 xgboost
 shap
 python-dotenv
+lightgbm
+catboost
+imbalanced-learn   
+optuna
+seaborn
