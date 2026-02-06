@@ -63,4 +63,6 @@ jobs:
             --name sepsis-api \
             --restart always \
             -p 5000:5000 \
+            -e S3_BUCKET=${{ secrets.S3_BUCKET }} \
+            -e S3_MODEL_PREFIX=${{ secrets.S3_MODEL_PREFIX }} \
             ${{ secrets.ECR_REPO_URI }}:latest
