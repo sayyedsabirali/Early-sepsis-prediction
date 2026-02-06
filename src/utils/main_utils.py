@@ -1,4 +1,5 @@
 import os
+import boto3
 import sys
 import pickle
 import numpy as np
@@ -60,12 +61,41 @@ def save_object(file_path: str, obj: object) -> None:
     except Exception as e:
         raise MyException(e, sys) from e
 
-def load_object(file_path: str) -> object:
-    """
-    Load object using pickle with proper error handling
-    """
-    try:
-        with open(file_path, "rb") as file_obj:
-            return pickle.load(file_obj)  # Use pickle instead of dill
-    except Exception as e:
-        raise MyException(e, sys) from e
+    def load_object(file_path: str) -> object:
+        """
+        Load object.
+        If local file not found, download from S3 automatically.
+        """
+        try:
+            # ✅ If file exists locally, load directly
+            if os.path.exists(file_path):
+                with open(file_path, "rb") as file_obj:
+                    return pickle.load(file_obj)
+
+            logging.info(f"Local file not found: {file_path}")
+            logging.info("Attempting to download from S3...")
+
+            # 🔥 S3 Config from environment variables
+            bucket = os.getenv("S3_BUCKET")
+            s3_key_prefix = os.getenv("S3_MODEL_PREFIX", "")
+
+            if bucket is None:
+                raise Exception("S3_BUCKET environment variable not set")
+
+            # Construct S3 key
+            filename = os.path.basename(file_path)
+            s3_key = f"{s3_key_prefix}/{filename}" if s3_key_prefix else filename
+
+            # Download file
+            s3 = boto3.client("s3")
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            s3.download_file(bucket, s3_key, file_path)
+
+            logging.info(f"Downloaded {s3_key} from S3")
+
+            # Load after download
+            with open(file_path, "rb") as file_obj:
+                return pickle.load(file_obj)
+
+        except Exception as e:
+            raise MyException(e, sys) from e
