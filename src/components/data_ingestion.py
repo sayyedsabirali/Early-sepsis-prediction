@@ -31,7 +31,6 @@ class DataIngestion:
 
             LOCAL_DATA_PATH = r"F:\9. MAJOR PROJECT\2. Sepsis- project\sepsis-data\sepsis data"
             df = pd.read_csv(LOCAL_DATA_PATH)
-
             logger.info(f"Loaded LOCAL sample data shape: {df.shape}")
             logger.info(f"Columns: {list(df.columns)}")
 
@@ -62,10 +61,6 @@ class DataIngestion:
                     f"{STAY_COL} not found in dataset. "
                     "ICU stay-level split is required."
                 )
-
-            # --------------------------------------------------
-            # 1️⃣ One label per ICU stay
-            # --------------------------------------------------
             stay_labels = (
                 dataframe[[STAY_COL, TARGET_COL]]
                 .drop_duplicates()

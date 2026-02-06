@@ -31,6 +31,7 @@
 #         self.s3_client = S3Client.s3_client
 
 import boto3
+from botocore.config import Config
 from src.constants import AWS_REGION_NAME
 from src.logger import logger
 
@@ -44,18 +45,27 @@ class S3Client:
         if S3Client.s3_resource is None or S3Client.s3_client is None:
             logger.debug("Initializing S3 client using IAM Role / default credential chain")
 
-            # ✅ DO NOT pass access keys
-            # boto3 will automatically use:
-            # - IAM Role (IMDSv2)
-            # - or env vars if present
+            # Configure timeouts for large file transfers
+            config = Config(
+                connect_timeout=60,      # 60 seconds connection timeout
+                read_timeout=300,        # 300 seconds read timeout for large files
+                retries={
+                    'max_attempts': 5,
+                    'mode': 'standard'
+                },
+                max_pool_connections=50  # Increased connection pool
+            )
+
             S3Client.s3_resource = boto3.resource(
                 "s3",
-                region_name=region_name
+                region_name=region_name,
+                config=config
             )
 
             S3Client.s3_client = boto3.client(
                 "s3",
-                region_name=region_name
+                region_name=region_name,
+                config=config
             )
 
         self.s3_resource = S3Client.s3_resource

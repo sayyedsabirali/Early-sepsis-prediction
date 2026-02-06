@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+from typing import Optional
 
 from src.exception import MyException
 from src.logger import logging
@@ -8,20 +9,18 @@ from src.utils.preprocessing_utils import PreprocessingUtils
 
 class MyModel:
     """
-    FINAL inference wrapper (NO sklearn transformer)
-
-    - Uses same preprocessing utils as training
-    - Uses trained XGBoost model
-    - Uses learned decision threshold
+    FINAL inference wrapper for both warning and confirmation models
     """
 
     def __init__(
         self,
         trained_model_object: object,
-        decision_threshold: float
+        decision_threshold: float,
+        model_type: str = "warning"  # "warning" or "confirmation"
     ):
         self.trained_model_object = trained_model_object
         self.decision_threshold = decision_threshold
+        self.model_type = model_type
 
     def predict_proba(self, dataframe: pd.DataFrame):
         try:
@@ -44,21 +43,23 @@ class MyModel:
             prob = float(self.predict_proba(dataframe)[0])
             pred = int(prob >= self.decision_threshold)
 
+            if self.model_type == "warning":
+                risk_label = "⚠️ WARNING - Potential Sepsis Risk" if pred == 1 else "✅ LOW RISK (Screening)"
+            else:
+                risk_label = "🔴 CONFIRMED - High Sepsis Risk" if pred == 1 else "🟡 NOT CONFIRMED"
+
             logging.info(
-                f"Inference | prob={prob:.4f} | "
-                f"threshold={self.decision_threshold:.3f} | "
-                f"label={pred}"
+                f"Inference | Model: {self.model_type} | "
+                f"prob={prob:.4f} | threshold={self.decision_threshold:.3f} | "
+                f"label={pred} | {risk_label}"
             )
 
             return {
                 "prediction": pred,
                 "sepsis_risk_score": round(prob, 4),
-                "risk_label": (
-                    "HIGH RISK OF SEPSIS (within 12h)"
-                    if pred == 1 else
-                    "LOW RISK OF SEPSIS (within 12h)"
-                ),
-                "decision_threshold": round(self.decision_threshold, 4)
+                "risk_label": risk_label,
+                "decision_threshold": round(self.decision_threshold, 4),
+                "model_type": self.model_type
             }
 
         except Exception as e:

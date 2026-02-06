@@ -126,11 +126,20 @@ class TrainPipeline:
             data_transformation_artifact = self.start_data_transformation(
                 data_ingestion_artifact=data_ingestion_artifact, data_validation_artifact=data_validation_artifact)
             model_trainer_artifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
-            model_evaluation_artifact = self.start_model_evaluation(data_transformation_artifact=data_transformation_artifact,model_trainer_artifact=model_trainer_artifact)
-            if not model_evaluation_artifact.is_model_accepted:
-                logging.info(f"Model not accepted.")
+            model_evaluation_artifact = self.start_model_evaluation(
+                data_transformation_artifact=data_transformation_artifact,
+                model_trainer_artifact=model_trainer_artifact
+            )
+            
+            # Check if both models are accepted
+            if not (model_evaluation_artifact.is_warning_model_accepted and 
+                    model_evaluation_artifact.is_confirmation_model_accepted):
+                logging.info(f"One or both models not accepted. Warning: {model_evaluation_artifact.is_warning_model_accepted}, Confirmation: {model_evaluation_artifact.is_confirmation_model_accepted}")
                 return None
+                
             model_pusher_artifact = self.start_model_pusher(model_evaluation_artifact=model_evaluation_artifact)
+            
+            logging.info("Dual model pipeline completed successfully!")
             
         except Exception as e:
             raise MyException(e, sys)

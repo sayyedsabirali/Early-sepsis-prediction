@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional,Dict
 
 
 # ==============================
@@ -24,52 +24,51 @@ class DataValidationArtifact:
     message: str
 
 
-
+# ==============================
+# Data Transformation
+# ==============================
 @dataclass
 class DataTransformationArtifact:
     transformed_train_path: str
-    transformed_val_path: str        # ✅ ADDED
+    transformed_val_path: str
     transformed_test_path: str
     transformer_object_path: Optional[str]
     message: str
 
 
 # ==============================
-# Model Trainer
+# Model Trainer (DUAL MODELS)
 # ==============================
 @dataclass
 class ModelTrainerArtifact:
-    trained_model_path: str
-    train_auc: float
-    val_auc: float
+    trained_warning_model_path: str
+    trained_confirmation_model_path: str
+    warning_model_auc: float
+    confirmation_model_auc: float
     message: str
 
 
-
+# ==============================
+# Model Evaluation (DUAL MODELS)
+# ==============================
 @dataclass
 class ModelEvaluationArtifact:
-    is_model_accepted: bool
-    s3_model_path: str
-    trained_model_path: str
-
-    # Core research metrics
-    new_model_pr_auc: float
-    best_model_pr_auc: float
-    pr_auc_diff: float
-    new_model_recall: float
-
-    # 🔥 Newly added reporting fields
-    accuracy: float
+    is_warning_model_accepted: bool
+    is_confirmation_model_accepted: bool
+    warning_model_pr_auc: float
+    confirmation_model_pr_auc: float
+    warning_model_recall: float
+    confirmation_model_precision: float
     metrics_path: str
-    pr_curve_path: str
-    roc_curve_path: str
-
+    message: str
+    model_training_config: Optional[Dict] = None 
 
 # ==============================
-# Model Pusher
+# Model Pusher (DUAL MODELS)
 # ==============================
 @dataclass
 class ModelPusherArtifact:
     bucket_name: str
-    s3_model_path: str
+    warning_s3_model_path: str
+    confirmation_s3_model_path: str
     message: str

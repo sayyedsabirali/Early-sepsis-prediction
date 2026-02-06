@@ -30,7 +30,7 @@ class DataValidationConfig:
 
 
 # ==================================================
-# DATA TRANSFORMATION  🔥 FIXED
+# DATA TRANSFORMATION
 # ==================================================
 @dataclass
 class DataTransformationConfig:
@@ -44,7 +44,7 @@ class DataTransformationConfig:
         "train.npy"
     )
 
-    transformed_val_path: str = os.path.join(   # 🔥 THIS WAS MISSING
+    transformed_val_path: str = os.path.join(
         ARTIFACT_DIR,
         DATA_TRANSFORMATION_DIR_NAME,
         "val.npy"
@@ -64,35 +64,43 @@ class DataTransformationConfig:
 
 
 # ==================================================
-# MODEL TRAINER
+# MODEL TRAINER (DUAL MODELS)
 # ==================================================
 @dataclass
 class ModelTrainerConfig:
     model_trainer_dir: str = os.path.join(ARTIFACT_DIR, MODEL_TRAINER_DIR_NAME)
-    trained_model_path: str = os.path.join(
+    trained_model_warning_path: str = os.path.join(
         ARTIFACT_DIR,
         MODEL_TRAINER_DIR_NAME,
-        MODEL_TRAINER_TRAINED_MODEL_NAME
+        MODEL_TRAINER_TRAINED_MODEL_DIR,
+        MODEL_TRAINER_WARNING_MODEL_NAME
     )
-    model_type: str = MODEL_TRAINER_MODEL_TYPE
+    trained_model_confirmation_path: str = os.path.join(
+        ARTIFACT_DIR,
+        MODEL_TRAINER_DIR_NAME,
+        MODEL_TRAINER_TRAINED_MODEL_DIR,
+        MODEL_TRAINER_CONFIRMATION_MODEL_NAME
+    )
     expected_auc: float = MODEL_TRAINER_EXPECTED_AUC
-    random_state: int = MODEL_TRAINER_RANDOM_STATE
+    trained_model_dir: str = os.path.join(ARTIFACT_DIR, MODEL_TRAINER_DIR_NAME, MODEL_TRAINER_TRAINED_MODEL_DIR)  # ✅ ADD THIS LINE
 
 
 # ==================================================
-# MODEL EVALUATION
+# MODEL EVALUATION (DUAL MODELS)
 # ==================================================
 @dataclass
 class ModelEvaluationConfig:
     changed_threshold_score: float = MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE
     bucket_name: str = MODEL_PUSHER_BUCKET_NAME
-    model_registry_key: str = MODEL_PUSHER_S3_KEY
+    warning_model_registry_key: str = MODEL_PUSHER_WARNING_MODEL_KEY
+    confirmation_model_registry_key: str = MODEL_PUSHER_CONFIRMATION_MODEL_KEY
 
 
 # ==================================================
-# MODEL PUSHER
+# MODEL PUSHER (DUAL MODELS)
 # ==================================================
 @dataclass
 class ModelPusherConfig:
     bucket_name: str = MODEL_PUSHER_BUCKET_NAME
-    model_registry_key: str = MODEL_PUSHER_S3_KEY
+    warning_model_registry_key: str = MODEL_PUSHER_WARNING_MODEL_KEY
+    confirmation_model_registry_key: str = MODEL_PUSHER_CONFIRMATION_MODEL_KEY
