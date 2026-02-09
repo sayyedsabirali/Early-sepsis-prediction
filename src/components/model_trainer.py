@@ -5,6 +5,7 @@ import xgboost as xgb
 from typing import Tuple, Dict
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import roc_auc_score, recall_score, precision_score, f1_score, accuracy_score
+from xgboost import XGBClassifier
 
 from src.constants import (
     XGBOOST_PARAMS,
@@ -166,6 +167,7 @@ class ModelTrainer:
             raise MyException(e, sys)
 
 
+
     def initiate_model_trainer(self) -> ModelTrainerArtifact:
         """Main training pipeline for dual models (MLflow style)"""
         try:
@@ -218,9 +220,10 @@ class ModelTrainer:
             
             confirmation_model_obj = MyModel(
                 trained_model_object=confirmation_model,
-                decision_threshold=0.5,  # MLflow used 0.5
+                decision_threshold=confirmation_metrics["threshold"],
                 model_type="confirmation"
             )
+
             
             # Save models locally
             logging.info("Saving trained models...")

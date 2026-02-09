@@ -108,23 +108,8 @@ XGBOOST_PARAMS = {
     "use_label_encoder": False,
 }
 
-# # KEEP SAME PERFORMANCE, REDUCE SIZE
-# EXTRA_TREES_PARAMS = {
-#     'n_estimators': 80,
-#     'random_state': 42,
-#     'n_jobs': -1,
-#     'class_weight': 'balanced_subsample',
-#     'max_depth': None,
-#     'min_samples_split': 2,
-#     'min_samples_leaf': 1,
-#     'bootstrap': False,
-#     'oob_score': False,
-#     'warm_start': False
-# }
-
-
 EXTRA_TREES_PARAMS = {
-    'n_estimators': 40,          # reduce trees
+    'n_estimators': 20,          # reduce trees
     'random_state': 42,
     'n_jobs': -1,
     'class_weight': 'balanced_subsample',
