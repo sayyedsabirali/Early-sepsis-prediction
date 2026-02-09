@@ -39,15 +39,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION_NAME }}
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        run: |
+          aws ecr get-login-password --region eu-north-1 \
+          | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URI }}
 
       - name: Stop & remove old container
         run: |
@@ -57,12 +53,13 @@ jobs:
         run: |
           docker pull ${{ secrets.ECR_REPO_URI }}:latest
 
-      - name: Run API container (AUTO-LIVE)
+      - name: Run API container
         run: |
           docker run -d \
             --name sepsis-api \
             --restart always \
             -p 5000:5000 \
-            -e S3_BUCKET=${{ secrets.S3_BUCKET }} \
-            -e S3_MODEL_PREFIX=${{ secrets.S3_MODEL_PREFIX }} \
+            -e AWS_DEFAULT_REGION=eu-north-1 \
+            -e S3_BUCKET=sepsis-mlops-data \
+            -e S3_MODEL_PREFIX=model-registry \
             ${{ secrets.ECR_REPO_URI }}:latest
