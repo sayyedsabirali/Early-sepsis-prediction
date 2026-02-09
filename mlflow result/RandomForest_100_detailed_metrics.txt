@@ -1,0 +1,23 @@
+============================================================
+MODEL: RandomForest_100
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 230.74 seconds
+
+Test Set Performance:
+  Accuracy: 0.9820
+  Precision: 0.9961
+  Recall: 0.1669
+  F1-Score: 0.2860
+  Specificity: 1.0000
+  ROC-AUC: 0.9159
+  Average Precision: 0.6094
+
+Validation Set Performance:
+  Accuracy: 0.9814
+  Precision: 0.9992
+  Recall: 0.1597
+  F1-Score: 0.2754

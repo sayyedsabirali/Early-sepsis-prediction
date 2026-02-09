@@ -1,0 +1,23 @@
+============================================================
+MODEL: CatBoost
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 29.24 seconds
+
+Test Set Performance:
+  Accuracy: 0.7891
+  Precision: 0.0715
+  Recall: 0.7300
+  F1-Score: 0.1303
+  Specificity: 0.7904
+  ROC-AUC: 0.8371
+  Average Precision: 0.1154
+
+Validation Set Performance:
+  Accuracy: 0.7873
+  Precision: 0.0716
+  Recall: 0.7199
+  F1-Score: 0.1302

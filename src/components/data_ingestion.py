@@ -21,10 +21,6 @@ class DataIngestion:
             self.sepsis_data = SepsisData()
         except Exception as e:
             raise MyException(e, sys)
-
-    # ==========================================================
-    # LOAD DATA
-    # ==========================================================
     def export_data_from_s3(self) -> DataFrame:
         try:
             logger.info("TEMP MODE: Loading data from local machine")

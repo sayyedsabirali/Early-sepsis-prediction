@@ -44,7 +44,7 @@ class MyModel:
             pred = int(prob >= self.decision_threshold)
 
             if self.model_type == "warning":
-                risk_label = "⚠️ WARNING - Potential Sepsis Risk" if pred == 1 else "✅ LOW RISK (Screening)"
+                risk_label = "WARNING - Potential Sepsis Risk" if pred == 1 else "LOW RISK (Screening)"
             else:
                 risk_label = "🔴 CONFIRMED - High Sepsis Risk" if pred == 1 else "🟡 NOT CONFIRMED"
 

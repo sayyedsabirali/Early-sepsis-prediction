@@ -1,0 +1,23 @@
+============================================================
+MODEL: ExtraTrees_100
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 171.28 seconds
+
+Test Set Performance:
+  Accuracy: 0.9881
+  Precision: 0.9872
+  Recall: 0.4565
+  F1-Score: 0.6243
+  Specificity: 0.9999
+  ROC-AUC: 0.9501
+  Average Precision: 0.7664
+
+Validation Set Performance:
+  Accuracy: 0.9873
+  Precision: 0.9963
+  Recall: 0.4290
+  F1-Score: 0.5998

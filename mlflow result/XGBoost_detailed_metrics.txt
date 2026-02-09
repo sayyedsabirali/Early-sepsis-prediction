@@ -1,0 +1,23 @@
+============================================================
+MODEL: XGBoost
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 9.43 seconds
+
+Test Set Performance:
+  Accuracy: 0.7941
+  Precision: 0.0751
+  Recall: 0.7518
+  F1-Score: 0.1365
+  Specificity: 0.7951
+  ROC-AUC: 0.8522
+  Average Precision: 0.1304
+
+Validation Set Performance:
+  Accuracy: 0.7929
+  Precision: 0.0737
+  Recall: 0.7233
+  F1-Score: 0.1338

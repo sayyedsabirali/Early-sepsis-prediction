@@ -1,0 +1,23 @@
+============================================================
+MODEL: AdaBoost
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 277.73 seconds
+
+Test Set Performance:
+  Accuracy: 0.9784
+  Precision: 0.0000
+  Recall: 0.0000
+  F1-Score: 0.0000
+  Specificity: 1.0000
+  ROC-AUC: 0.7858
+  Average Precision: 0.0993
+
+Validation Set Performance:
+  Accuracy: 0.9779
+  Precision: 0.0000
+  Recall: 0.0000
+  F1-Score: 0.0000

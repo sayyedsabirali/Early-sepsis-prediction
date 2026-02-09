@@ -1,0 +1,23 @@
+============================================================
+MODEL: HistGradientBoosting
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 26.00 seconds
+
+Test Set Performance:
+  Accuracy: 0.9779
+  Precision: 0.2440
+  Recall: 0.0096
+  F1-Score: 0.0185
+  Specificity: 0.9993
+  ROC-AUC: 0.8355
+  Average Precision: 0.1231
+
+Validation Set Performance:
+  Accuracy: 0.9776
+  Precision: 0.3042
+  Recall: 0.0114
+  F1-Score: 0.0220

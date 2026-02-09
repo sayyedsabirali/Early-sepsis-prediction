@@ -9,14 +9,14 @@ import uvicorn
 from src.logger import logging
 from src.pipeline.prediction_pipeline import (
     SepsisPatientData,
-    SepsisRiskPredictor  # ✅ Use SepsisRiskPredictor directly
+    SepsisRiskPredictor  # Use SepsisRiskPredictor directly
 )
 
 # ============================================================
 # FastAPI App
 # ============================================================
 app = FastAPI(
-    title="🚨 Dual Model Sepsis Risk Prediction API",
+    title="Dual Model Sepsis Risk Prediction API",
     description="Predicts Sepsis risk using dual models: Warning Model (73% Recall) + Confirmation Model (99% Precision)",
     version="2.0.0",
     docs_url="/docs",
@@ -35,8 +35,8 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # 🔥 LOAD DUAL MODEL PREDICTOR
 try:
-    predictor = SepsisRiskPredictor()  # ✅ Direct initialization
-    logging.info("✅ Dual Model Predictor loaded successfully!")
+    predictor = SepsisRiskPredictor()  # Direct initialization
+    logging.info("Dual Model Predictor loaded successfully!")
 except Exception as e:
     logging.error(f"❌ Failed to load predictor: {e}")
     predictor = None
@@ -82,7 +82,7 @@ class SepsisPredictionResponse(BaseModel):
 def root():
     """Root endpoint with API info"""
     return {
-        "api": "🚨 Dual Model Sepsis Risk Prediction",
+        "api": "Dual Model Sepsis Risk Prediction",
         "version": "2.0.0",
         "status": "operational",
         "models": [
@@ -130,7 +130,7 @@ def model_info():
         if predictor is None:
             raise HTTPException(status_code=500, detail="Predictor not initialized")
         
-        # ✅ Get thresholds from predictor (check the actual attribute names)
+        # Get thresholds from predictor (check the actual attribute names)
         warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
         confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
         
@@ -241,14 +241,14 @@ def get_example():
 # ============================================================
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("🚀 STARTING DUAL MODEL SEPSIS PREDICTION API")
+    print("STARTING DUAL MODEL SEPSIS PREDICTION API")
     print("="*60)
     
     if predictor is None:
-        print("❌ ERROR: Failed to load predictor. Check if models are trained.")
+        print("ERROR: Failed to load predictor. Check if models are trained.")
         sys.exit(1)
     
-    print("\n✅ Models Loaded Successfully:")
+    print("\nModels Loaded Successfully:")
     print("   1. Warning Model (XGBoost): 73% Recall, 9.4% Precision")
     print("   2. Confirmation Model (RandomForest): 99% Precision, 18.7% Recall")
     

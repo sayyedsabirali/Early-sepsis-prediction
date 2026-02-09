@@ -82,7 +82,7 @@ class ModelTrainerConfig:
         MODEL_TRAINER_CONFIRMATION_MODEL_NAME
     )
     expected_auc: float = MODEL_TRAINER_EXPECTED_AUC
-    trained_model_dir: str = os.path.join(ARTIFACT_DIR, MODEL_TRAINER_DIR_NAME, MODEL_TRAINER_TRAINED_MODEL_DIR)  # ✅ ADD THIS LINE
+    trained_model_dir: str = os.path.join(ARTIFACT_DIR, MODEL_TRAINER_DIR_NAME, MODEL_TRAINER_TRAINED_MODEL_DIR)  # ADD THIS LINE
 
 
 # ==================================================

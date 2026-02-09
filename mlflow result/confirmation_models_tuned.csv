@@ -1,0 +1,4 @@
+Model,Best_Precision,Recall,F1_Score,Specificity,ROC_AUC,Tuning_Time,Best_Params
+ExtraTrees,0.884524449220849,0.5169587337478802,0.6525410290969634,0.99850674500986,0.9557058282072047,309.52902364730835,"{'n_estimators': 200, 'min_samples_split': 10, 'min_samples_leaf': 1, 'max_depth': None, 'class_weight': 'balanced_subsample'}"
+RandomForest,0.9019607843137255,0.004333898624458263,0.008626347866854196,0.999989577094066,0.9267761518061105,413.30778765678406,"{'n_estimators': 300, 'min_samples_split': 5, 'min_samples_leaf': 4, 'max_depth': 20, 'class_weight': None}"
+XGBoost,0.0,0.0,0.0,0.9999993051396044,0.8591702402106917,60.70424008369446,"{'subsample': 0.8, 'scale_pos_weight': 1, 'n_estimators': 200, 'max_depth': 10, 'learning_rate': 0.01, 'colsample_bytree': 0.6}"

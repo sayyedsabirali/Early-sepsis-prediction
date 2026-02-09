@@ -1,0 +1,3 @@
+Model,Precision,Best_Recall,F1_Score,ROC_AUC,Tuning_Time,Best_Params
+XGBoost_Warning,0.03140435449555272,0.9470510646316186,0.060792810336954974,0.8178041461424486,31.242138862609863,"{'subsample': 1.0, 'scale_pos_weight': 100, 'n_estimators': 100, 'max_depth': 7, 'learning_rate': 0.01, 'colsample_bytree': 0.8}"
+LightGBM_Warning,0.06659390239275781,0.716632121097921,0.12186349302138046,0.8187390072641335,117.45974016189575,"{'num_leaves': 31, 'n_estimators': 100, 'min_child_samples': 50, 'max_depth': 15, 'learning_rate': 0.1, 'is_unbalance': True, 'boosting_type': 'gbdt'}"

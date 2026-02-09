@@ -54,7 +54,7 @@ class ModelPusher:
                         remove=False  # Don't remove local file
                     )
                 
-                logging.info(f"✅ Successfully uploaded {s3_key}")
+                logging.info(f"Successfully uploaded {s3_key}")
                 return True
                 
             except Exception as e:
@@ -85,7 +85,7 @@ class ModelPusher:
                 raise FileNotFoundError(f"Confirmation model not found: {confirmation_model_path}")
             
             # Upload Warning Model (Small - 1.2 MB)
-            logging.info("📤 Uploading Warning Model (1.2 MB)...")
+            logging.info(" Uploading Warning Model (1.2 MB)...")
             warning_success = self._upload_with_retry(
                 warning_model_path,
                 self.model_pusher_config.warning_model_registry_key
@@ -96,7 +96,7 @@ class ModelPusher:
                 return None
             
             # Upload Confirmation Model (Large - 850 MB)
-            logging.info("📤 Uploading Confirmation Model (850 MB - this may take time)...")
+            logging.info(" Uploading Confirmation Model (850 MB - this may take time)...")
             
             # Check file size first
             conf_size_mb = os.path.getsize(confirmation_model_path) / (1024 * 1024)
@@ -127,7 +127,7 @@ class ModelPusher:
                     confirmation_s3_model_path=self.model_pusher_config.confirmation_model_registry_key,
                     message="Dual sepsis models successfully pushed to S3",
                 )
-                logging.info("✅ Both models successfully pushed to S3")
+                logging.info("Both models successfully pushed to S3")
             else:
                 artifact = ModelPusherArtifact(
                     bucket_name=self.model_pusher_config.bucket_name,
@@ -135,7 +135,7 @@ class ModelPusher:
                     confirmation_s3_model_path=None,
                     message="Warning model uploaded. Confirmation model upload failed.",
                 )
-                logging.warning("⚠️ Only warning model uploaded. Confirmation model upload failed.")
+                logging.warning(" Only warning model uploaded. Confirmation model upload failed.")
             
             return artifact
 

@@ -98,35 +98,40 @@ LOG_DIR: str = "logs"
 # ==================================================
 # Model Parameters
 # ==================================================
-
-# Warning Model (XGBoost - High Recall)
-XGBOOST_MODEL_PARAMS: dict = {
-    "n_estimators": 500,
-    "max_depth": 12,
-    "learning_rate": 0.05,
-    "subsample": 0.8,
-    "colsample_bytree": 0.8,
-    "scale_pos_weight": 3,
-    "eval_metric": "logloss",
-    "random_state": 42,
-    "use_label_encoder": False,
-}
-
-# Confirmation Model 
-RANDOM_FOREST_PARAMS: dict = {
+XGBOOST_PARAMS = {
     "n_estimators": 100,
-    "max_depth": 12,
-    "class_weight": "balanced",
-    "n_jobs": -1,
     "random_state": 42,
+    "n_jobs": -1,
+    "scale_pos_weight": 51.43,  # MLflow से calculated value
+    "tree_method": "hist",
+    "eval_metric": "logloss",
+    "use_label_encoder": False,
+    # Note: max_depth, learning_rate, etc. default थे MLflow में
+}
+
+# KEEP SAME PERFORMANCE, REDUCE SIZE
+EXTRA_TREES_PARAMS = {
+    'n_estimators': 80,
+    'random_state': 42,
+    'n_jobs': -1,
+    'class_weight': 'balanced_subsample',
+    'max_depth': None,
+    'min_samples_split': 2,
+    'min_samples_leaf': 1,
+    'bootstrap': False,
+    'oob_score': False,
+    'warm_start': False
 }
 
 # ==================================================
-# RISK THRESHOLDS
+# PERFORMANCE TARGETS (FROM MLFLOW)
 # ==================================================
-SEPSIS_WARNING_THRESHOLD: float = 0.15  # Low threshold for warnings
-SEPSIS_CONFIRMATION_THRESHOLD: float = 0.70  # High threshold for confirmation
-SEPSIS_MODERATE_RISK_THRESHOLD: float = 0.40
+WARNING_TARGET_RECALL = 0.7518      # 75.18% from MLflow
+CONFIRMATION_TARGET_PRECISION = 0.9872  # 98.72% from MLflow
 
-MIN_ACCEPTABLE_RECALL: float = 0.60
-MIN_ACCEPTABLE_PRECISION: float = 0.80
+# ==================================================
+# THRESHOLDS
+# ==================================================
+WARNING_THRESHOLD = 0.5   
+CONFIRMATION_THRESHOLD = 0.90
+MODERATE_THRESHOLD = 0.30

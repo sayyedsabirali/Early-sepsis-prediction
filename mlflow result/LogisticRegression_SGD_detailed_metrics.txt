@@ -1,0 +1,23 @@
+============================================================
+MODEL: LogisticRegression_SGD
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 162.92 seconds
+
+Test Set Performance:
+  Accuracy: 0.1079
+  Precision: 0.0220
+  Recall: 0.9256
+  F1-Score: 0.0430
+  Specificity: 0.0898
+  ROC-AUC: 0.5086
+  Average Precision: 0.0220
+
+Validation Set Performance:
+  Accuracy: 0.1155
+  Precision: 0.0226
+  Recall: 0.9238
+  F1-Score: 0.0442

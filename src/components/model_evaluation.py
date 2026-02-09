@@ -91,13 +91,13 @@ class ModelEvaluation:
             accuracy = accuracy_score(y_test, y_pred)
             
             metrics = {
-                "roc_auc": float(roc_auc),  # ✅ Convert to float
-                "pr_auc": float(pr_auc),    # ✅ Convert to float
-                "recall": float(recall),    # ✅ Convert to float
-                "precision": float(precision),  # ✅ Convert to float
-                "accuracy": float(accuracy),    # ✅ Convert to float
-                "threshold": float(model.decision_threshold),  # ✅ Convert to float
-                "model_type": str(model.model_type)  # ✅ Convert to string
+                "roc_auc": float(roc_auc),  # Convert to float
+                "pr_auc": float(pr_auc),    # Convert to float
+                "recall": float(recall),    # Convert to float
+                "precision": float(precision),  # Convert to float
+                "accuracy": float(accuracy),    # Convert to float
+                "threshold": float(model.decision_threshold),  # Convert to float
+                "model_type": str(model.model_type)  # Convert to string
             }
             
             # Confusion matrix
@@ -242,34 +242,34 @@ class ModelEvaluation:
                     prod_warning_model, X_test, y_test, "Production Warning Model"
                 )
                 warning_improvement = warning_metrics["pr_auc"] - prod_warning_metrics["pr_auc"]
-                comparison_results["warning_improvement"] = float(warning_improvement)  # ✅ Convert to float
+                comparison_results["warning_improvement"] = float(warning_improvement)  # Convert to float
                 warning_accepted = warning_improvement >= 0
             else:
                 warning_accepted = True
-                comparison_results["warning_improvement"] = float(warning_metrics["pr_auc"])  # ✅ Convert to float
+                comparison_results["warning_improvement"] = float(warning_metrics["pr_auc"])  # Convert to float
             
             if prod_confirmation_model:
                 prod_confirmation_metrics, _ = self._evaluate_single_model(
                     prod_confirmation_model, X_test, y_test, "Production Confirmation Model"
                 )
                 confirmation_improvement = confirmation_metrics["pr_auc"] - prod_confirmation_metrics["pr_auc"]
-                comparison_results["confirmation_improvement"] = float(confirmation_improvement)  # ✅ Convert to float
+                comparison_results["confirmation_improvement"] = float(confirmation_improvement)  # Convert to float
                 confirmation_accepted = confirmation_improvement >= 0
             else:
                 confirmation_accepted = True
-                comparison_results["confirmation_improvement"] = float(confirmation_metrics["pr_auc"])  # ✅ Convert to float
+                comparison_results["confirmation_improvement"] = float(confirmation_metrics["pr_auc"])  # Convert to float
             
             # Save curves
             self._save_curves(y_test, warning_prob, confirmation_prob, "artifacts/evaluation")
             
-            # ✅ FIXED: Save comprehensive metrics
+            # FIXED: Save comprehensive metrics
             all_metrics = {
                 "warning_model": warning_metrics,
                 "confirmation_model": confirmation_metrics,
                 "comparison": comparison_results,
                 "acceptance": {
-                    "warning_model_accepted": bool(warning_accepted),  # ✅ Convert to bool
-                    "confirmation_model_accepted": bool(confirmation_accepted)  # ✅ Convert to bool
+                    "warning_model_accepted": bool(warning_accepted),  # Convert to bool
+                    "confirmation_model_accepted": bool(confirmation_accepted)  # Convert to bool
                 }
             }
             
@@ -313,10 +313,10 @@ class ModelEvaluation:
             return ModelEvaluationArtifact(
                 is_warning_model_accepted=warning_accepted,
                 is_confirmation_model_accepted=confirmation_accepted,
-                warning_model_pr_auc=float(warning_metrics["pr_auc"]),  # ✅ Convert to float
-                confirmation_model_pr_auc=float(confirmation_metrics["pr_auc"]),  # ✅ Convert to float
-                warning_model_recall=float(warning_metrics["recall"]),  # ✅ Convert to float
-                confirmation_model_precision=float(confirmation_metrics["precision"]),  # ✅ Convert to float
+                warning_model_pr_auc=float(warning_metrics["pr_auc"]),  # Convert to float
+                confirmation_model_pr_auc=float(confirmation_metrics["pr_auc"]),  # Convert to float
+                warning_model_recall=float(warning_metrics["recall"]),  # Convert to float
+                confirmation_model_precision=float(confirmation_metrics["precision"]),  # Convert to float
                 metrics_path=metrics_path,
                 message="Dual model evaluation completed successfully"
             )

@@ -67,7 +67,7 @@ def load_object(file_path: str) -> object:
     If local file not found, download from S3 automatically.
     """
     try:
-        # ✅ If file exists locally, load directly
+        # If file exists locally, load directly
         if os.path.exists(file_path):
             with open(file_path, "rb") as file_obj:
                 return pickle.load(file_obj)

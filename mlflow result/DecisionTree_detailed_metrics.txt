@@ -1,0 +1,23 @@
+============================================================
+MODEL: DecisionTree
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 65.95 seconds
+
+Test Set Performance:
+  Accuracy: 0.9756
+  Precision: 0.4285
+  Recall: 0.3799
+  F1-Score: 0.4028
+  Specificity: 0.9888
+  ROC-AUC: 0.6844
+  Average Precision: 0.1764
+
+Validation Set Performance:
+  Accuracy: 0.9750
+  Precision: 0.4210
+  Recall: 0.3484
+  F1-Score: 0.3813

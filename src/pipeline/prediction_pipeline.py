@@ -151,7 +151,7 @@ class SepsisRiskPredictor:
                 
         else:
             risk_level = "LOW_RISK"
-            risk_label = "✅ LOW RISK"
+            risk_label = "LOW RISK"
         
         return risk_level, risk_label
     
@@ -164,14 +164,14 @@ class SepsisRiskPredictor:
         
         notes = {
             "HIGH_RISK_CONFIRMED": (
-                f"🚨 HIGH RISK - CONFIRMED\n"
+                f"HIGH RISK - CONFIRMED\n"
                 f"• Warning Model Score: {warning_score:.1%} (threshold: {warning_threshold:.1%})\n"
                 f"• Confirmation Model Score: {confirmation_score:.1%} (threshold: {confirmation_threshold:.1%})\n"
                 f"• Clinical Action: IMMEDIATE INTERVENTION REQUIRED\n"
                 f"• Recommendation: Start sepsis protocol, consider antibiotics, monitor closely"
             ),
             "MODERATE_RISK": (
-                f"⚠️ MODERATE RISK\n"
+                f"MODERATE RISK\n"
                 f"• Warning Model Score: {warning_score:.1%} (threshold: {warning_threshold:.1%})\n"
                 f"• Confirmation Model Score: {confirmation_score:.1%} (threshold: {confirmation_threshold:.1%})\n"
                 f"• Clinical Action: CLOSE MONITORING\n"
@@ -185,7 +185,7 @@ class SepsisRiskPredictor:
                 f"• Recommendation: Continue current care plan, monitor for changes"
             ),
             "LOW_RISK": (
-                f"✅ LOW RISK\n"
+                f"LOW RISK\n"
                 f"• Warning Model Score: {warning_score:.1%} (threshold: {warning_threshold:.1%})\n"
                 f"• Confirmation Model Score: {confirmation_score:.1%} (threshold: {confirmation_threshold:.1%})\n"
                 f"• Clinical Action: ROUTINE CARE\n"

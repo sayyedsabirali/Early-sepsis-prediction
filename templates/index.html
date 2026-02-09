@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🚨 Dual Model Sepsis Risk Prediction System</title>
+    <title>Dual Model Sepsis Risk Prediction System</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -425,35 +425,35 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚨 Dual Model Sepsis Risk Prediction</h1>
+            <h1>Dual Model Sepsis Risk Prediction</h1>
             <p>Two-stage assessment: Warning Model + Confirmation Model</p>
 
             <div style="background: rgba(255, 255, 255, 0.95); color: #333; padding: 20px; border-radius: 15px; margin-top: 20px; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                <h3 style="color: #667eea; margin-bottom: 12px; font-size: 1.3rem;">🎯 Dual Model Clinical Decision Support</h3>
+                <h3 style="color: #667eea; margin-bottom: 12px; font-size: 1.3rem;">Dual Model Clinical Decision Support</h3>
                 <p style="line-height: 1.8; font-size: 1rem; margin-bottom: 10px;">
                     <strong>Stage 1 - Warning Model:</strong> High recall  screening to catch most sepsis cases<br>
                     <strong>Stage 2 - Confirmation Model:</strong> High precision diagnosis for confirmed cases
                 </p>
                 <p style="line-height: 1.8; font-size: 1rem; color: #666;">
-                    <strong>⚠️ Clinical Note:</strong> This is a decision support tool. Always use clinical judgment alongside model predictions.
+                    <strong>Clinical Note:</strong> This is a decision support tool. Always use clinical judgment alongside model predictions.
                 </p>
             </div>
         </div>
         
         <div class="risk-explanation">
-            <h4>📊 How the Dual Model System Works:</h4>
+            <h4>How the Dual Model System Works:</h4>
             <ul>
-                <li><strong>⚠️ Warning Model :</strong> Screens for potential sepsis. May have false alarms but catches most cases.</li>
-                <li><strong>✅ Confirmation Model :</strong> Confirms high-risk cases. When it predicts sepsis.</li>
-                <li><strong>🎯 Combined Decision:</strong> Both models work together for more reliable risk assessment.</li>
+                <li><strong>Warning Model :</strong> Screens for potential sepsis. May have false alarms but catches most cases.</li>
+                <li><strong>Confirmation Model :</strong> Confirms high-risk cases. When it predicts sepsis.</li>
+                <li><strong>Combined Decision:</strong> Both models work together for more reliable risk assessment.</li>
             </ul>
         </div>
 
         <div class="card">
-            <button class="example-btn" onclick="fillExampleData()">📋 Load Example Patient Data</button>
+            <button class="example-btn" onclick="fillExampleData()">Load Example Patient Data</button>
 
             <form id="predictionForm">
-                <div class="section-title">👤 Patient Demographics</div>
+                <div class="section-title">Patient Demographics</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="anchor_age">Age <span class="info-badge">Years</span></label>
@@ -470,7 +470,7 @@
                     </div>
                 </div>
 
-                <div class="section-title">📊 ICU Vital Signs</div>
+                <div class="section-title">ICU Vital Signs</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="hr">Heart Rate <span class="info-badge">bpm</span></label>
@@ -498,7 +498,7 @@
                     </div>
                 </div>
 
-                <div class="section-title">🔬 Labs & Organ Dysfunction Markers</div>
+                <div class="section-title">Labs & Organ Dysfunction Markers</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="creatinine">Creatinine <span class="info-badge">mg/dL</span></label>
@@ -527,8 +527,8 @@
                 </div>
 
                 <div class="btn-container">
-                    <button type="submit" class="btn btn-predict">🔍 Analyze Sepsis Risk</button>
-                    <button type="reset" class="btn btn-reset">🔄 Reset Form</button>
+                    <button type="submit" class="btn btn-predict">Analyze Sepsis Risk</button>
+                    <button type="reset" class="btn btn-reset">Reset Form</button>
                 </div>
             </form>
 
@@ -546,7 +546,7 @@
                 <!-- Model Comparison -->
                 <div class="model-comparison" id="modelComparison">
                     <div class="model-card warning">
-                        <h3>⚠️ Warning Model <span style="font-size: 0.8rem; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px;"> Recall</span></h3>
+                        <h3>Warning Model <span style="font-size: 0.8rem; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px;"> Recall</span></h3>
                         <div class="model-score" id="warningScore">0%</div>
                         <div class="model-threshold">Threshold: <span id="warningThreshold">46.5%</span></div>
                         <div class="model-status" id="warningStatus">Safe</div>
@@ -554,7 +554,7 @@
                     </div>
                     
                     <div class="model-card confirmation">
-                        <h3>✅ Confirmation Model <span style="font-size: 0.8rem; background: #d1ecf1; color: #0c5460; padding: 2px 8px; border-radius: 10px;"> Precision</span></h3>
+                        <h3>Confirmation Model <span style="font-size: 0.8rem; background: #d1ecf1; color: #0c5460; padding: 2px 8px; border-radius: 10px;"> Precision</span></h3>
                         <div class="model-score" id="confirmationScore">0%</div>
                         <div class="model-threshold">Threshold: <span id="confirmationThreshold">43.3%</span></div>
                         <div class="model-status" id="confirmationStatus">Safe</div>
@@ -565,7 +565,7 @@
                 <!-- Final Assessment -->
                 <div class="final-assessment">
                     <h3 style="color: #333; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                        🎯 Combined Assessment
+                        Combined Assessment
                     </h3>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
@@ -704,14 +704,14 @@
         function getRiskTitle(riskLevel) {
             switch(riskLevel) {
                 case 'HIGH_RISK_CONFIRMED':
-                    return '🚨 HIGH RISK - SEPSIS CONFIRMED';
+                    return 'HIGH RISK - SEPSIS CONFIRMED';
                 case 'MODERATE_RISK':
                     return '🟡 MODERATE RISK - MONITOR CLOSELY';
                 case 'LOW_RISK_WARNING':
                     return '🔔 LOW RISK - WARNING DETECTED';
                 case 'LOW_RISK':
                 default:
-                    return '✅ LOW RISK - NO SEPSIS DETECTED';
+                    return 'LOW RISK - NO SEPSIS DETECTED';
             }
         }
 

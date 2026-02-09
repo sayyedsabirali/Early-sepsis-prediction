@@ -1,0 +1,23 @@
+============================================================
+MODEL: NaiveBayes
+============================================================
+
+Training Configuration:
+  Samples: 5,492,627
+  Features: 12
+  Training Time: 1.12 seconds
+
+Test Set Performance:
+  Accuracy: 0.9576
+  Precision: 0.0595
+  Recall: 0.0648
+  F1-Score: 0.0620
+  Specificity: 0.9773
+  ROC-AUC: 0.6998
+  Average Precision: 0.0436
+
+Validation Set Performance:
+  Accuracy: 0.9554
+  Precision: 0.0598
+  Recall: 0.0691
+  F1-Score: 0.0641
