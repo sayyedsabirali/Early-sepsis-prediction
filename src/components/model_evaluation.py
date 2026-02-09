@@ -67,9 +67,6 @@ class ModelEvaluation:
                 except Exception as e:
                     logging.warning(f"Could not load warning model: {e}")
             
-            # SKIP confirmation model (850 MB) - it's too big
-            logging.info("Skipping confirmation model load (850 MB - too large for network)")
-            
             return prod_warning_model, prod_confirmation_model
             
         except Exception as e:

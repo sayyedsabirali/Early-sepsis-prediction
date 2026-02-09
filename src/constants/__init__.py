@@ -102,25 +102,38 @@ XGBOOST_PARAMS = {
     "n_estimators": 100,
     "random_state": 42,
     "n_jobs": -1,
-    "scale_pos_weight": 51.43,  # MLflow से calculated value
+    "scale_pos_weight": 51.43,
     "tree_method": "hist",
     "eval_metric": "logloss",
     "use_label_encoder": False,
-    # Note: max_depth, learning_rate, etc. default थे MLflow में
 }
 
-# KEEP SAME PERFORMANCE, REDUCE SIZE
+# # KEEP SAME PERFORMANCE, REDUCE SIZE
+# EXTRA_TREES_PARAMS = {
+#     'n_estimators': 80,
+#     'random_state': 42,
+#     'n_jobs': -1,
+#     'class_weight': 'balanced_subsample',
+#     'max_depth': None,
+#     'min_samples_split': 2,
+#     'min_samples_leaf': 1,
+#     'bootstrap': False,
+#     'oob_score': False,
+#     'warm_start': False
+# }
+
+
 EXTRA_TREES_PARAMS = {
-    'n_estimators': 80,
+    'n_estimators': 40,          # reduce trees
     'random_state': 42,
     'n_jobs': -1,
     'class_weight': 'balanced_subsample',
-    'max_depth': None,
+
+    'max_depth': None,           # allow full splits
     'min_samples_split': 2,
     'min_samples_leaf': 1,
-    'bootstrap': False,
-    'oob_score': False,
-    'warm_start': False
+
+    'bootstrap': False
 }
 
 # ==================================================

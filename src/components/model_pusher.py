@@ -95,9 +95,6 @@ class ModelPusher:
                 logging.error("Failed to upload warning model")
                 return None
             
-            # Upload Confirmation Model (Large - 850 MB)
-            logging.info(" Uploading Confirmation Model (850 MB - this may take time)...")
-            
             # Check file size first
             conf_size_mb = os.path.getsize(confirmation_model_path) / (1024 * 1024)
             

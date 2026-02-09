@@ -115,68 +115,56 @@ class ModelTrainer:
         except Exception as e:
             raise MyException(e, sys)
 
-    def train_confirmation_model(self, X_train: np.ndarray, y_train: np.ndarray,
-                                 X_val: np.ndarray, y_val: np.ndarray,
-                                 X_test: np.ndarray, y_test: np.ndarray) -> Tuple[object, Dict]:
-        """Train ExtraTrees model for high precision (MLflow style)"""
+    def train_confirmation_model(
+        self,
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_val: np.ndarray,
+        y_val: np.ndarray,
+        X_test: np.ndarray,
+        y_test: np.ndarray
+    ) -> Tuple[object, Dict]:
+        """Train optimized ExtraTrees model for high precision"""
+
         try:
-            logging.info("Training Confirmation Model (ExtraTrees - High Precision)")
-            
-            # Use EXACT MLflow parameters
-            model = ExtraTreesClassifier(
-                n_estimators=100,
-                random_state=42,
-                n_jobs=-1,
-                class_weight='balanced_subsample'
-            )
+            logging.info("Training Confirmation Model (Optimized ExtraTrees)")
+
+            # 🔥 Use params from constants file
+            model = ExtraTreesClassifier(**EXTRA_TREES_PARAMS)
+
             model.fit(X_train, y_train)
-            
-            # Get predictions on TEST DATA (like MLflow)
+
             y_test_prob = model.predict_proba(X_test)[:, 1]
             y_val_prob = model.predict_proba(X_val)[:, 1]
-            
-            # Use threshold 0.5 for evaluation (like MLflow)
+
             threshold = 0.5
             y_test_pred = (y_test_prob >= threshold).astype(int)
             y_val_pred = (y_val_prob >= threshold).astype(int)
-            
-            # Calculate ALL metrics like MLflow
+
             test_roc_auc = roc_auc_score(y_test, y_test_prob)
             test_precision = precision_score(y_test, y_test_pred, zero_division=0)
             test_recall = recall_score(y_test, y_test_pred, zero_division=0)
             test_f1 = f1_score(y_test, y_test_pred, zero_division=0)
             test_accuracy = accuracy_score(y_test, y_test_pred)
-            
-            val_roc_auc = roc_auc_score(y_val, y_val_prob)
-            val_precision = precision_score(y_val, y_val_pred, zero_division=0)
-            val_recall = recall_score(y_val, y_val_pred, zero_division=0)
-            val_f1 = f1_score(y_val, y_val_pred, zero_division=0)
-            val_accuracy = accuracy_score(y_val, y_val_pred)
-            
-            logging.info(f"Confirmation Model Performance (TEST SET - Like MLflow):")
-            logging.info(f"  Precision: {test_precision:.4f} (Target: {CONFIRMATION_TARGET_PRECISION})")
+
+            logging.info("Confirmation Model Performance (Optimized):")
+            logging.info(f"  Precision: {test_precision:.4f}")
             logging.info(f"  Recall: {test_recall:.4f}")
-            logging.info(f"  F1-Score: {test_f1:.4f}")
             logging.info(f"  ROC-AUC: {test_roc_auc:.4f}")
-            logging.info(f"  Accuracy: {test_accuracy:.4f}")
-            
+
             return model, {
                 "test_roc_auc": test_roc_auc,
                 "test_precision": test_precision,
                 "test_recall": test_recall,
                 "test_f1": test_f1,
                 "test_accuracy": test_accuracy,
-                "val_roc_auc": val_roc_auc,
-                "val_precision": val_precision,
-                "val_recall": val_recall,
-                "val_f1": val_f1,
-                "val_accuracy": val_accuracy,
                 "threshold": threshold,
                 "model_type": "extratrees_confirmation"
             }
-            
+
         except Exception as e:
             raise MyException(e, sys)
+
 
     def initiate_model_trainer(self) -> ModelTrainerArtifact:
         """Main training pipeline for dual models (MLflow style)"""
@@ -262,17 +250,17 @@ class ModelTrainer:
             
             logging.info(" WARNING MODEL (XGBoost) - TEST SET METRICS:")
             logging.info(f"  Accuracy: {warning_metrics['test_accuracy']:.4f}")
-            logging.info(f"  Precision: {warning_metrics['test_precision']:.4f}")
-            logging.info(f"  Recall: {warning_metrics['test_recall']:.4f} (Target: {WARNING_TARGET_RECALL})")
-            logging.info(f"  F1-Score: {warning_metrics['test_f1']:.4f}")
-            logging.info(f"  ROC-AUC: {warning_metrics['test_roc_auc']:.4f}")
+            logging.info(f"Precision: {warning_metrics['test_precision']:.4f}")
+            logging.info(f"Recall: {warning_metrics['test_recall']:.4f} (Target: {WARNING_TARGET_RECALL})")
+            logging.info(f"F1-Score: {warning_metrics['test_f1']:.4f}")
+            logging.info(f"ROC-AUC: {warning_metrics['test_roc_auc']:.4f}")
             
             logging.info("\nCONFIRMATION MODEL (ExtraTrees) - TEST SET METRICS:")
-            logging.info(f"  Accuracy: {confirmation_metrics['test_accuracy']:.4f}")
-            logging.info(f"  Precision: {confirmation_metrics['test_precision']:.4f} (Target: {CONFIRMATION_TARGET_PRECISION})")
-            logging.info(f"  Recall: {confirmation_metrics['test_recall']:.4f}")
-            logging.info(f"  F1-Score: {confirmation_metrics['test_f1']:.4f}")
-            logging.info(f"  ROC-AUC: {confirmation_metrics['test_roc_auc']:.4f}")
+            logging.info(f"Accuracy: {confirmation_metrics['test_accuracy']:.4f}")
+            logging.info(f"Precision: {confirmation_metrics['test_precision']:.4f} (Target: {CONFIRMATION_TARGET_PRECISION})")
+            logging.info(f"Recall: {confirmation_metrics['test_recall']:.4f}")
+            logging.info(f"F1-Score: {confirmation_metrics['test_f1']:.4f}")
+            logging.info(f"ROC-AUC: {confirmation_metrics['test_roc_auc']:.4f}")
             
             logging.info("\nThese metrics should match MLflow results!")
             logging.info("="*80)
