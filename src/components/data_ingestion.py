@@ -71,7 +71,7 @@ class DataIngestion:
             # --------------------------------------------------
             # 2️⃣ Train vs Temp (70 / 30)
             # --------------------------------------------------
-            train_stays, temp_stays = train_test_split(
+            train_stays, temp_stays = train_test_split( 
                 stay_labels,
                 test_size=self.data_ingestion_config.train_test_split_ratio,
                 random_state=42,
