@@ -7,3 +7,120 @@ artifacts/
 .env
 .ipynb_checkpoints
 research/
+
+# Environment variables and secrets
+.env
+.env.local
+.secrets/
+config/credentials.yaml
+config/secrets.yaml
+
+# AWS credentials (if accidentally stored)
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Data files (exclude raw/processed data if stored locally)
+data/
+*.csv
+*.parquet
+*.json
+*.pkl
+*.pickle
+*.feather
+
+# Model artifacts
+artifacts/
+models/
+*.h5
+*.pth
+*.joblib
+
+# Logs
+logs/
+*.log
+mlruns/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project-specific exclusions
+# Keep config/schema.yaml but exclude sensitive configs
+config/*.yaml
+!config/schema.yaml
+config/*.yml
+!config/schema.yml
+
+# Output directories from pipeline
+output/
+processed_data/
+feature_store/
+model_registry/
+# .gitignore में ये lines add करो
+echo "" >> .gitignore
+echo "# MLflow and database files" >> .gitignore
+echo "mlflow.db" >> .gitignore
+echo "*.db" >> .gitignore
+echo "mlruns/" >> .gitignore
+echo "" >> .gitignore
+echo "# Model files" >> .gitignore
+echo "*.pkl" >> .gitignore
+echo "*.joblib" >> .gitignore
+echo "" >> .gitignore
+echo "# Environment and secrets" >> .gitignore
+echo ".env" >> .gitignore
+echo "secrets/" >> .gitignore
+echo "" >> .gitignore
+echo "# Artifacts" >> .gitignore
+echo "artifacts/" >> .gitignore
