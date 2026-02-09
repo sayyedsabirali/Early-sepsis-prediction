@@ -9,10 +9,11 @@ from src.logger import logging
 from src.utils.main_utils import load_object
 from src.utils.preprocessing_utils import PreprocessingUtils
 from src.constants import (
-    SEPSIS_WARNING_THRESHOLD,
-    SEPSIS_CONFIRMATION_THRESHOLD,
-    SEPSIS_MODERATE_RISK_THRESHOLD
+    WARNING_THRESHOLD,
+    CONFIRMATION_THRESHOLD,
+    MODERATE_THRESHOLD
 )
+
 
 
 @dataclass
@@ -142,7 +143,7 @@ class SepsisRiskPredictor:
             risk_label = "🔴 HIGH RISK - CONFIRMED"
             
         elif warning_score >= warning_threshold:
-            if confirmation_score >= SEPSIS_MODERATE_RISK_THRESHOLD:
+            if confirmation_score >= MODERATE_THRESHOLD:
                 risk_level = "MODERATE_RISK"
                 risk_label = "🟡 MODERATE RISK"
             else:
