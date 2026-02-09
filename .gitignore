@@ -124,3 +124,9 @@ echo "secrets/" >> .gitignore
 echo "" >> .gitignore
 echo "# Artifacts" >> .gitignore
 echo "artifacts/" >> .gitignore
+
+mlflow.db
+*.db
+__pycache__/
+sepsis-env/
+.env
