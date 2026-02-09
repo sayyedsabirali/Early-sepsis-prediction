@@ -75,7 +75,7 @@ class DataIngestion:
                 stay_labels,
                 test_size=self.data_ingestion_config.train_test_split_ratio,
                 random_state=42,
-                stratify=stay_labels[TARGET_COL]
+                stratify=stay_labels[TARGET_COL] 
             )
 
             # --------------------------------------------------
