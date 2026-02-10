@@ -53,6 +53,12 @@ jobs:
         run: |
           docker pull ${{ secrets.ECR_REPO_URI }}:latest
 
+      - name: Debug env
+        run: |
+          echo "REGION=$AWS_REGION"
+          echo "BUCKET=${{ secrets.S3_BUCKET }}"
+          echo "PREFIX=${{ secrets.S3_MODEL_PREFIX }}"
+
       - name: Run API container (AUTO-LIVE) 
         run: |
           docker run -d \
