@@ -17,7 +17,7 @@ from src.pipeline.prediction_pipeline import SepsisPatientData, SepsisRiskPredic
 app = FastAPI(
     title="Dual Model Sepsis Risk Prediction API",
     description="Predicts Sepsis risk using dual models: Warning Model (High Recall) + Confirmation Model (High Precision)",
-    version="2.0.0",
+    version="2.0.0", 
     docs_url="/docs",
     redoc_url="/redoc"
 )
