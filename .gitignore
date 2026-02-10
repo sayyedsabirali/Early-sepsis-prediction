@@ -2,7 +2,10 @@ sepsis-env/
 __pycache__/
 *.pyc
 logs/
-artifacts/
+artifacts/data_ingestion/
+artifacts/data_validation/
+artifacts/data_transformation/
+artifacts/model_trainer/
 .dvc/
 .env
 .ipynb_checkpoints
@@ -67,9 +70,6 @@ data/
 *.pkl
 *.pickle
 *.feather
-
-# Model artifacts
-artifacts/
 models/
 *.h5
 *.pth
@@ -122,8 +122,7 @@ echo "# Environment and secrets" >> .gitignore
 echo ".env" >> .gitignore
 echo "secrets/" >> .gitignore
 echo "" >> .gitignore
-echo "# Artifacts" >> .gitignore
-echo "artifacts/" >> .gitignore
+
 
 mlflow.db
 *.db
