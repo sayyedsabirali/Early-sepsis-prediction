@@ -32,22 +32,17 @@ app.add_middleware(
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# 🔥 LOAD DUAL MODEL PREDICTOR
-try:
-    predictor = SepsisRiskPredictor()  # Direct initialization
-    logging.info("Dual Model Predictor loaded successfully!")
-    
-    # Get actual thresholds for logging
-    warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
-    confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
-    
-    logging.info(f"Warning Model threshold: {warning_threshold:.4f}")
-    logging.info(f"Confirmation Model threshold: {confirmation_threshold:.4f}")
-    
-except Exception as e:
-    logging.error(f"❌ Failed to load predictor: {e}")
-    predictor = None
+predictor = None
 
+@app.on_event("startup")
+async def load_models():
+    global predictor
+    try:
+        logging.info("Loading models at startup...")
+        predictor = SepsisRiskPredictor()
+        logging.info("Models loaded successfully!")
+    except Exception as e:
+        logging.error(f"Model loading failed: {e}")
 # ============================================================
 # Request Schema
 # ============================================================
