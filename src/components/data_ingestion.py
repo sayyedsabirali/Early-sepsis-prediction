@@ -8,7 +8,6 @@ from src.entity.config_entity import DataIngestionConfig
 from src.entity.artifact_entity import DataIngestionArtifact
 from src.exception import MyException
 from src.logger import logger
-from src.data_access.sepsis_data import SepsisData
 
 
 class DataIngestion:
@@ -18,7 +17,6 @@ class DataIngestion:
     ):
         try:
             self.data_ingestion_config = data_ingestion_config
-            self.sepsis_data = SepsisData()
         except Exception as e:
             raise MyException(e, sys)
     def export_data_from_s3(self) -> DataFrame:

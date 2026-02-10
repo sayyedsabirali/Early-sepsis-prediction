@@ -20,7 +20,7 @@ from src.utils.main_utils import load_numpy_array_data, save_object
 from src.entity.config_entity import ModelTrainerConfig
 from src.entity.artifact_entity import DataTransformationArtifact, ModelTrainerArtifact
 from src.entity.estimator import MyModel
-
+from src.constants import XGBOOST_PARAMS, EXTRA_TREES_PARAMS
 
 class ModelTrainer:
     """
@@ -150,29 +150,9 @@ class ModelTrainer:
             # Calculate scale_pos_weight for imbalanced data
             scale_pos_weight = imbalance_ratio
             logging.info(f"\nUsing scale_pos_weight: {scale_pos_weight:.2f}")
-            
-            # Enhanced parameters for imbalanced data
-            params = {
-                "n_estimators": 200,
-                "random_state": 42,
-                "n_jobs": -1,
-                "scale_pos_weight": scale_pos_weight,
-                "tree_method": "hist",
-                "eval_metric": ["logloss", "auc", "error"],
-                "use_label_encoder": False,
-                "learning_rate": 0.05,  # Lower learning rate for stability
-                "max_depth": 8,  # Slightly deeper for complex patterns
-                "min_child_weight": 5,  # Higher to prevent overfitting
-                "subsample": 0.7,
-                "colsample_bytree": 0.7,
-                "reg_alpha": 1.0,  # L1 regularization
-                "reg_lambda": 1.0,  # L2 regularization
-                "gamma": 0.1  # Minimum loss reduction
-            }
-            
             # Train model with early stopping
             logging.info("\nTraining XGBoost model...")
-            model = xgb.XGBClassifier(**params)
+            model = xgb.XGBClassifier(**XGBOOST_PARAMS)
             model.fit(
                 X_train, y_train,
                 eval_set=[(X_val, y_val)],
@@ -337,10 +317,6 @@ class ModelTrainer:
             # Use params from constants with class weights
             params = EXTRA_TREES_PARAMS.copy()
             params['class_weight'] = class_weight_dict
-            params['n_estimators'] = 200  # Increase for better performance
-            params['min_samples_leaf'] = 5  # Prevent overfitting
-            params['max_features'] = 'sqrt'  # Better for high-dimensional data
-            
             logging.info("\nTraining ExtraTrees model...")
             model = ExtraTreesClassifier(**params)
             model.fit(X_train, y_train)
