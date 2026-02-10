@@ -548,7 +548,7 @@
                     <div class="model-card warning">
                         <h3>Warning Model <span style="font-size: 0.8rem; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px;"> Recall</span></h3>
                         <div class="model-score" id="warningScore">0%</div>
-                        <div class="model-threshold">Threshold: <span id="warningThreshold">46.5%</span></div>
+                        <div class="model-threshold">Threshold: <span id="warningThreshold">Loading...</span></div>
                         <div class="model-status" id="warningStatus">Safe</div>
                         <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Screening for potential sepsis cases</p>
                     </div>
@@ -556,7 +556,7 @@
                     <div class="model-card confirmation">
                         <h3>Confirmation Model <span style="font-size: 0.8rem; background: #d1ecf1; color: #0c5460; padding: 2px 8px; border-radius: 10px;"> Precision</span></h3>
                         <div class="model-score" id="confirmationScore">0%</div>
-                        <div class="model-threshold">Threshold: <span id="confirmationThreshold">43.3%</span></div>
+                        <div class="model-threshold">Threshold: <span id="confirmationThreshold">Loading...</span></div>
                         <div class="model-status" id="confirmationStatus">Safe</div>
                         <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Confirming high-risk sepsis cases</p>
                     </div>
@@ -599,6 +599,42 @@
 
     <script>
         const API_URL = '/predict';
+        const MODEL_INFO_URL = '/model-info';
+
+        // Store actual thresholds globally
+        let actualThresholds = {
+            warning: 0.4645,  // Default fallback
+            confirmation: 0.4333  // Default fallback
+        };
+
+        // Fetch actual model thresholds on page load
+        async function loadModelThresholds() {
+            try {
+                const response = await fetch(MODEL_INFO_URL);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update actual thresholds
+                    if (data.warning_model && data.warning_model.threshold) {
+                        actualThresholds.warning = data.warning_model.threshold;
+                    }
+                    if (data.confirmation_model && data.confirmation_model.threshold) {
+                        actualThresholds.confirmation = data.confirmation_model.threshold;
+                    }
+                    
+                    // Update UI with actual thresholds
+                    document.getElementById('warningThreshold').textContent = 
+                        `${(actualThresholds.warning * 100).toFixed(1)}%`;
+                    document.getElementById('confirmationThreshold').textContent = 
+                        `${(actualThresholds.confirmation * 100).toFixed(1)}%`;
+                    
+                    console.log('Loaded actual thresholds:', actualThresholds);
+                }
+            } catch (error) {
+                console.error('Could not load model thresholds:', error);
+                // Keep default thresholds
+            }
+        }
 
         // Clinical thresholds for UI notes
         const ranges = {
@@ -673,18 +709,21 @@
         }
 
         function fillExampleData() {
-            // High risk example
-            document.getElementById('hr').value = 140;
-            document.getElementById('map').value = 55;
-            document.getElementById('rr').value = 32;
-            document.getElementById('temp_c').value = 39.8;
-            document.getElementById('spo2').value = 85;
-            document.getElementById('creatinine').value = 3.5;
-            document.getElementById('bilirubin').value = 3.2;
-            document.getElementById('platelets').value = 50;
-            document.getElementById('lactate').value = 5.8;
-            document.getElementById('urine_output_6h_ml').value = 100;
-            document.getElementById('anchor_age').value = 72;
+            // Example with warning threshold (0.02 = 2%)
+            // Set values that will trigger warning model but not confirmation
+            
+            // Values that will score high on warning model
+            document.getElementById('hr').value = 120;  // Elevated
+            document.getElementById('map').value = 65;  // Normal
+            document.getElementById('rr').value = 22;   // Slightly elevated
+            document.getElementById('temp_c').value = 38.0; // Fever
+            document.getElementById('spo2').value = 94;  // Slightly low
+            document.getElementById('creatinine').value = 1.5; // Elevated
+            document.getElementById('bilirubin').value = 1.0; // Normal
+            document.getElementById('platelets').value = 180; // Normal
+            document.getElementById('lactate').value = 1.8; // Normal-high
+            document.getElementById('urine_output_6h_ml').value = 250; // Low
+            document.getElementById('anchor_age').value = 68;
             document.getElementById('gender').value = 1;
         }
 
@@ -706,9 +745,9 @@
                 case 'HIGH_RISK_CONFIRMED':
                     return 'HIGH RISK - SEPSIS CONFIRMED';
                 case 'MODERATE_RISK':
-                    return '🟡 MODERATE RISK - MONITOR CLOSELY';
+                    return 'MODERATE RISK - MONITOR CLOSELY';
                 case 'LOW_RISK_WARNING':
-                    return '🔔 LOW RISK - WARNING DETECTED';
+                    return 'LOW RISK - WARNING DETECTED';
                 case 'LOW_RISK':
                 default:
                     return 'LOW RISK - NO SEPSIS DETECTED';
@@ -763,7 +802,7 @@
                 // Update titles
                 document.getElementById('resultTitle').textContent = getRiskTitle(result.risk_level);
                 
-                // Update model scores
+                // Update model scores with actual thresholds from response
                 document.getElementById('warningScore').textContent = `${(result.warning_model_score * 100).toFixed(1)}%`;
                 document.getElementById('warningThreshold').textContent = `${(result.warning_threshold * 100).toFixed(1)}%`;
                 
@@ -792,7 +831,7 @@
                 
                 // Update consensus score
                 document.getElementById('consensusScore').textContent = `${(result.sepsis_risk_score * 100).toFixed(1)}%`;
-                document.getElementById('riskLevel').textContent = result.risk_level.replace('_', ' ');
+                document.getElementById('riskLevel').textContent = result.risk_level.replace(/_/g, ' ');
                 document.getElementById('riskLabel').textContent = result.risk_label;
                 
                 // Update clinical note
@@ -816,10 +855,9 @@
             document.getElementById('showDetailsBtn').style.display = "none";
         });
 
-        // Load low risk example on page load
+        // Load actual thresholds on page load
         window.addEventListener('load', () => {
-            // Optional: Load a default example
-            // fillExampleData();
+            loadModelThresholds();
         });
     </script>
 </body>

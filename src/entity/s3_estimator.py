@@ -78,14 +78,7 @@ class S3ModelEstimator:
         """
         try:
             model = self.load_model()
-
-            if not hasattr(model.trained_model_object, "predict_proba"):
-                raise Exception("Underlying model does not support predict_proba")
-
-            # APPLY PREPROCESSING ONLY ONCE
-            df_processed = model.preprocessing_object.transform(dataframe)
-
-            return model.trained_model_object.predict_proba(df_processed)
-
+            return model.predict_proba(dataframe)  # ✅ Correct!
+            
         except Exception as e:
             raise MyException(e, sys)

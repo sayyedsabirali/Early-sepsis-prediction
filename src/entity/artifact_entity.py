@@ -45,6 +45,10 @@ class ModelTrainerArtifact:
     trained_confirmation_model_path: str
     warning_model_auc: float
     confirmation_model_auc: float
+    warning_model_recall: float  # ✅ Add this
+    confirmation_model_precision: float  # ✅ Add this
+    warning_threshold: float  # ✅ Add this
+    confirmation_threshold: float  # ✅ Add this
     message: str
 
 

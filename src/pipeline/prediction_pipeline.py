@@ -8,12 +8,6 @@ from src.exception import MyException
 from src.logger import logging
 from src.utils.main_utils import load_object
 from src.utils.preprocessing_utils import PreprocessingUtils
-from src.constants import (
-    WARNING_THRESHOLD,
-    CONFIRMATION_THRESHOLD,
-    MODERATE_THRESHOLD
-)
-
 
 
 @dataclass
@@ -74,20 +68,6 @@ class DualModelPredictor:
             
         except Exception as e:
             raise MyException(e, sys)
-    
-    def _preprocess_input(self, input_df: pd.DataFrame) -> pd.DataFrame:
-        """Apply preprocessing to input data"""
-        try:
-            # Apply feature engineering
-            processed_df = PreprocessingUtils.apply_complete_feature_engineering(input_df)
-            
-            # Apply preprocessing transformations
-            processed_df = PreprocessingUtils.apply_preprocessing_transformations(processed_df)
-            
-            return processed_df
-            
-        except Exception as e:
-            raise MyException(e, sys)
 
 
 class SepsisRiskPredictor:
@@ -137,18 +117,21 @@ class SepsisRiskPredictor:
         warning_threshold = self.dual_predictor.warning_model.decision_threshold
         confirmation_threshold = self.dual_predictor.confirmation_model.decision_threshold
         
+        # Calculate moderate threshold dynamically
+        moderate_threshold = (warning_threshold + confirmation_threshold) / 2
+        
         # Decision Logic
         if confirmation_score >= confirmation_threshold:
             risk_level = "HIGH_RISK_CONFIRMED"
-            risk_label = "🔴 HIGH RISK - CONFIRMED"
+            risk_label = "HIGH RISK - CONFIRMED"
             
         elif warning_score >= warning_threshold:
-            if confirmation_score >= MODERATE_THRESHOLD:
+            if confirmation_score >= moderate_threshold:
                 risk_level = "MODERATE_RISK"
-                risk_label = "🟡 MODERATE RISK"
+                risk_label = "MODERATE RISK"
             else:
                 risk_level = "LOW_RISK_WARNING"
-                risk_label = "🟢 LOW RISK - WARNING"
+                risk_label = "LOW RISK - WARNING"
                 
         else:
             risk_level = "LOW_RISK"
@@ -179,7 +162,7 @@ class SepsisRiskPredictor:
                 f"• Recommendation: Increase monitoring frequency, prepare interventions"
             ),
             "LOW_RISK_WARNING": (
-                f"🔔 LOW RISK - WARNING\n"
+                f"LOW RISK - WARNING\n"
                 f"• Warning Model Score: {warning_score:.1%} (threshold: {warning_threshold:.1%})\n"
                 f"• Confirmation Model Score: {confirmation_score:.1%} (threshold: {confirmation_threshold:.1%})\n"
                 f"• Clinical Action: ROUTINE MONITORING\n"
@@ -204,12 +187,13 @@ class SepsisRiskPredictor:
             # Clip inputs to safe ranges
             input_df = self._clip_inputs(input_df)
             
-            # Preprocess input
-            processed_df = self.dual_predictor._preprocess_input(input_df)
+            # Apply feature engineering only (MyModel will handle preprocessing)
+            input_df = PreprocessingUtils.apply_complete_feature_engineering(input_df)
             
-            # Get predictions from both models
-            warning_prob = self.dual_predictor.warning_model.trained_model_object.predict_proba(processed_df)[:, 1][0]
-            confirmation_prob = self.dual_predictor.confirmation_model.trained_model_object.predict_proba(processed_df)[:, 1][0]
+            # Get predictions from both models using MyModel's predict_proba
+            # MyModel handles preprocessing internally
+            warning_prob = self.dual_predictor.warning_model.predict_proba(input_df)[0]
+            confirmation_prob = self.dual_predictor.confirmation_model.predict_proba(input_df)[0]
             
             # Get thresholds
             warning_threshold = self.dual_predictor.warning_model.decision_threshold

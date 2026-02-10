@@ -124,12 +124,5 @@ EXTRA_TREES_PARAMS = {
 # ==================================================
 # PERFORMANCE TARGETS (FROM MLFLOW)
 # ==================================================
-WARNING_TARGET_RECALL = 0.7518      # 75.18% from MLflow
-CONFIRMATION_TARGET_PRECISION = 0.9872  # 98.72% from MLflow
-
-# ==================================================
-# THRESHOLDS
-# ==================================================
-WARNING_THRESHOLD = 0.5   
-CONFIRMATION_THRESHOLD = 0.90
-MODERATE_THRESHOLD = 0.30
+WARNING_TARGET_RECALL = 0.7518    
+CONFIRMATION_TARGET_PRECISION = 0.9872  

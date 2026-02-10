@@ -5,19 +5,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 import uvicorn
+import json
+import os
 
 from src.logger import logging
-from src.pipeline.prediction_pipeline import (
-    SepsisPatientData,
-    SepsisRiskPredictor  # Use SepsisRiskPredictor directly
-)
+from src.pipeline.prediction_pipeline import SepsisPatientData, SepsisRiskPredictor
 
 # ============================================================
 # FastAPI App
 # ============================================================
 app = FastAPI(
     title="Dual Model Sepsis Risk Prediction API",
-    description="Predicts Sepsis risk using dual models: Warning Model (73% Recall) + Confirmation Model (99% Precision)",
+    description="Predicts Sepsis risk using dual models: Warning Model (High Recall) + Confirmation Model (High Precision)",
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -37,6 +36,14 @@ BASE_DIR = Path(__file__).resolve().parent
 try:
     predictor = SepsisRiskPredictor()  # Direct initialization
     logging.info("Dual Model Predictor loaded successfully!")
+    
+    # Get actual thresholds for logging
+    warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
+    confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
+    
+    logging.info(f"Warning Model threshold: {warning_threshold:.4f}")
+    logging.info(f"Confirmation Model threshold: {confirmation_threshold:.4f}")
+    
 except Exception as e:
     logging.error(f"❌ Failed to load predictor: {e}")
     predictor = None
@@ -81,29 +88,48 @@ class SepsisPredictionResponse(BaseModel):
 @app.get("/")
 def root():
     """Root endpoint with API info"""
-    return {
-        "api": "Dual Model Sepsis Risk Prediction",
-        "version": "2.0.0",
-        "status": "operational",
-        "models": [
-            {
-                "name": "Warning Model (XGBoost)",
-                "purpose": "High Recall Screening",
-                "performance": "73% Recall, 9.4% Precision"
+    try:
+        if predictor is None:
+            raise HTTPException(status_code=500, detail="Models not loaded")
+        
+        # Get actual thresholds
+        warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
+        confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
+        
+        return {
+            "api": "Dual Model Sepsis Risk Prediction",
+            "version": "2.0.0",
+            "status": "operational",
+            "thresholds": {
+                "warning_model": round(warning_threshold, 4),
+                "confirmation_model": round(confirmation_threshold, 4)
             },
-            {
-                "name": "Confirmation Model (RandomForest)", 
-                "purpose": "High Precision Diagnosis",
-                "performance": "99% Precision, 18.7% Recall"
+            "models": [
+                {
+                    "name": "Warning Model (XGBoost)",
+                    "purpose": "High Recall Screening",
+                    "threshold": round(warning_threshold, 4)
+                },
+                {
+                    "name": "Confirmation Model (ExtraTrees)", 
+                    "purpose": "High Precision Diagnosis",
+                    "threshold": round(confirmation_threshold, 4)
+                }
+            ],
+            "endpoints": {
+                "/": "API information",
+                "/health": "Health check",
+                "/model-info": "Model details",
+                "/predict": "Make prediction (POST)"
             }
-        ],
-        "endpoints": {
-            "/": "API information",
-            "/health": "Health check",
-            "/model-info": "Model details",
-            "/predict": "Make prediction (POST)"
         }
-    }
+    except Exception as e:
+        return {
+            "api": "Dual Model Sepsis Risk Prediction",
+            "version": "2.0.0",
+            "status": "error",
+            "error": str(e)
+        }
 
 
 @app.get("/health")
@@ -112,15 +138,22 @@ def health():
     if predictor is None:
         raise HTTPException(status_code=500, detail="Models not loaded")
     
-    return {
-        "status": "healthy",
-        "models_loaded": True,
-        "model_types": ["warning", "confirmation"],
-        "performance": {
-            "warning_model": {"recall": 0.73, "precision": 0.094},
-            "confirmation_model": {"precision": 0.99, "recall": 0.187}
+    try:
+        # Get actual thresholds
+        warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
+        confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
+        
+        return {
+            "status": "healthy",
+            "models_loaded": True,
+            "model_types": ["warning", "confirmation"],
+            "thresholds": {
+                "warning_model": round(warning_threshold, 4),
+                "confirmation_model": round(confirmation_threshold, 4)
+            }
         }
-    }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting model info: {str(e)}")
 
 
 @app.get("/model-info")
@@ -130,48 +163,45 @@ def model_info():
         if predictor is None:
             raise HTTPException(status_code=500, detail="Predictor not initialized")
         
-        # Get thresholds from predictor (check the actual attribute names)
+        # Get thresholds from predictor
         warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
         confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
+        
+        # Try to load actual performance metrics from saved file
+        metrics_path = "artifacts/evaluation/dual_model_metrics.json"
+        performance_data = {}
+        
+        if os.path.exists(metrics_path):
+            try:
+                with open(metrics_path, 'r') as f:
+                    metrics = json.load(f)
+                    if "warning_model" in metrics and "confirmation_model" in metrics:
+                        performance_data = metrics
+            except:
+                pass
         
         return {
             "warning_model": {
                 "type": "XGBoost",
                 "purpose": "High Recall Screening",
                 "threshold": round(warning_threshold, 4),
-                "characteristics": "Catches 73% of sepsis cases (high recall), may have false alarms",
-                "performance": {
-                    "recall": 0.73,
-                    "precision": 0.094,
-                    "roc_auc": 0.8493
-                }
+                "characteristics": "Optimized for high recall to catch potential sepsis cases",
+                "performance": performance_data.get("warning_model", {
+                    "recall": "Not available",
+                    "precision": "Not available",
+                    "roc_auc": "Not available"
+                })
             },
             "confirmation_model": {
-                "type": "RandomForest",
-                "purpose": "High Precision Confirmation",
+                "type": "ExtraTrees",
+                "purpose": "High Precision Confirmation", 
                 "threshold": round(confirmation_threshold, 4),
-                "characteristics": "99% accurate when it predicts sepsis (high precision), misses some cases",
-                "performance": {
-                    "precision": 0.99,
-                    "recall": 0.187,
-                    "roc_auc": 0.9293
-                }
-            }
-        }
-    except AttributeError as e:
-        # If attribute names are different, return default values
-        return {
-            "warning_model": {
-                "type": "XGBoost",
-                "purpose": "High Recall Screening",
-                "threshold": 0.4645,
-                "characteristics": "Catches 73% of sepsis cases"
-            },
-            "confirmation_model": {
-                "type": "RandomForest",
-                "purpose": "High Precision Confirmation",
-                "threshold": 0.4333,
-                "characteristics": "99% accurate when it predicts sepsis"
+                "characteristics": "Optimized for high precision to confirm sepsis cases",
+                "performance": performance_data.get("confirmation_model", {
+                    "precision": "Not available",
+                    "recall": "Not available", 
+                    "roc_auc": "Not available"
+                })
             }
         }
     except Exception as e:
@@ -208,7 +238,6 @@ def serve_ui():
     if ui_path.exists():
         return FileResponse(ui_path)
     return {"message": "UI not available. Please create templates/index.html"}
-
 
 
 # ============================================================
@@ -248,20 +277,17 @@ if __name__ == "__main__":
         print("ERROR: Failed to load predictor. Check if models are trained.")
         sys.exit(1)
     
-    print("\nModels Loaded Successfully:")
-    print("   1. Warning Model (XGBoost): 73% Recall, 9.4% Precision")
-    print("   2. Confirmation Model (RandomForest): 99% Precision, 18.7% Recall")
-    
-    print("\n🌐 API Endpoints:")
-    print("   • http://localhost:5000/          - API Info")
-    print("   • http://localhost:5000/docs      - Swagger UI")
-    print("   • http://localhost:5000/health    - Health Check")
-    print("   • http://localhost:5000/predict   - Make Prediction")
-    
-    print("\n" + "="*60)
-    print("📡 API running at: http://localhost:5000")
-    print("="*60 + "\n")
-    
+    # Get actual thresholds for display
+    try:
+        warning_threshold = predictor.dual_predictor.warning_model.decision_threshold
+        confirmation_threshold = predictor.dual_predictor.confirmation_model.decision_threshold
+        
+        print(f"\nModels Loaded Successfully:")
+        print(f"   1. Warning Model (XGBoost): Threshold = {warning_threshold:.4f}")
+        print(f"   2. Confirmation Model (ExtraTrees): Threshold = {confirmation_threshold:.4f}")
+        
+    except Exception as e:
+        print(f"\nModels Loaded Successfully (threshold info not available)")
     uvicorn.run(
         app,
         host="0.0.0.0",
