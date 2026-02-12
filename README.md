@@ -48,7 +48,7 @@ Capturing physiological instability by taking the most extreme values per hour.
 ### 2. Sepsis-3 Component Logic
 * **SOFA Calculation:** Dynamically computed every hour for Renal (Creatinine), Liver (Bilirubin), Coagulation (Platelets), and Cardiovascular (MAP + Vasopressors) systems.
 * **Baseline:** The **Running Minimum** SOFA score per stay is used as the patient's individual baseline.
-* **Infection Suspicion:** Flagged via Culture Collection and Antibiotic Administration within a $\pm$24h window.
+* **Infection Suspicion:** Flagged via Culture Collection and Antibiotic Administration within a ±24h window.
 
 ---
 
@@ -124,3 +124,4 @@ The project utilizes a self-hosted GitHub Actions runner on AWS:
 
 ## 📌 Summary
 This system provides a clinically robust, end-to-end solution for sepsis forecasting. By integrating Sepsis-3 logic with a high-performance MLOps pipeline, it moves beyond simple classification into the realm of real-time clinical decision support.
+
