@@ -125,3 +125,9 @@ The project utilizes a self-hosted GitHub Actions runner on AWS:
 ## 📌 Summary
 This system provides a clinically robust, end-to-end solution for sepsis forecasting. By integrating Sepsis-3 logic with a high-performance MLOps pipeline, it moves beyond simple classification into the realm of real-time clinical decision support.
 
+---
+
+## 🎬 Demo
+A demo video showcasing the project workflow is available here:
+[**Watch Project Demo**](https://drive.google.com/file/d/1-1VYn0DnmEV8Ia3kn62xr_r0caCncxez/view?usp=sharing)
+
